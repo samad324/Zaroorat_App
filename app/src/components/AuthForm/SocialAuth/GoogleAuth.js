@@ -5,7 +5,7 @@ import { withNavigation } from "react-navigation";
 import { connect } from "react-redux";
 import {
   androidClientId,
-  androidStandaloneAppClientId,
+  // androidStandaloneAppClientId,
   iosClientId
 } from "../../../config";
 import { loginAction } from "../../../store/actions/auth.action";
@@ -21,7 +21,7 @@ const signInWithGoogleAsync = async props => {
   try {
     const result = await Google.logInAsync({
       androidClientId,
-      androidStandaloneAppClientId,
+      // androidStandaloneAppClientId,
       iosClientId,
       scopes: ["profile", "email"]
     });
