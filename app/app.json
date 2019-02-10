@@ -22,13 +22,7 @@
       "bundleIdentifier": "host.exp.exponent"
     },
     "android": {
-      "package": "host.exp.exponent",
-      "config": {
-        "googleSignIn": {
-          "apiKey": "316261621246-ad814hcipurpqi4di3df01lajt1ge40d.apps.googleusercontent.com",
-          "certificateHash": "AF:BC:20:A4:8E:2E:AA:69:5C:B5:8D:FE:95:60:28:26:3B:FA:9F:C7"
-        }
-      }
+      "package": "host.exp.exponent"
     }
   }
 }
