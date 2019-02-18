@@ -11,16 +11,10 @@ import { Loading } from "../../components/Loading";
 */
 
 class AuthLoadingWithNav extends Component {
-  state = {
-    userStatus: this.props.userStatus || null
-  };
-
   componentDidMount() {
     firebase.auth().onAuthStateChanged(user => {
       // console.log(user);
-      this.props.navigation.navigate(
-        user || this.state.userStatus ? "HomeScreen" : "LoginScreen"
-      );
+      this.props.navigation.navigate(user ? "HomeScreen" : "LoginScreen");
     });
   }
 
@@ -29,10 +23,11 @@ class AuthLoadingWithNav extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  userStatus: state.authReducer.userStatus
-});
+// const mapStateToProps = state => ({
+//   userStatus: state.authReducer.userStatus
+// });
 
-export const AuthLoading = connect(mapStateToProps)(
-  withNavigation(AuthLoadingWithNav)
-);
+export const AuthLoading = connect(
+  // mapStateToProps
+  null
+)(withNavigation(AuthLoadingWithNav));
