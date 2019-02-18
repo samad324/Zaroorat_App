@@ -7,18 +7,17 @@ import { LOGIN, SIGNUP, SIGNOUT } from "../constants";
 */
 
 const initialState = {
-  user: null,
-  userStatus: false
+  user: null
 };
 
 export const authReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case LOGIN:
-      return { ...state, user: payload.user, userStatus: payload.userStatus };
+      return { ...state, user: payload.user };
     case SIGNUP:
-      return { ...state, user: payload.user, userStatus: payload.userStatus };
+      return { ...state, user: payload.user };
     case SIGNOUT:
-      return { ...state, userStatus: payload.userStatus };
+      return { ...state };
 
     default:
       return state;
