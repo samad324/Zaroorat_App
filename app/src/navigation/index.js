@@ -3,11 +3,7 @@ import {
   createAppContainer,
   createSwitchNavigator
 } from "react-navigation";
-import {
-  AuthLoadingScreen,
-  LoginScreen,
-  SignupScreen
-} from "../screens/screensConfig";
+import { AuthLoadingScreen, LoginScreen } from "../screens/screensConfig";
 
 import { AppDrawerNavigator } from "./drawer.navigator";
 
@@ -17,32 +13,7 @@ import { AppDrawerNavigator } from "./drawer.navigator";
 |--------------------------------------------------
 */
 
-// const AppStack = createStackNavigator(
-//   {
-//     AppDrawerNavigator
-//   },
-//   {
-//     defaultNavigationOptions: ({ navigation }) => {
-//       return {
-//         headerLeft: (
-//           <View style={{ paddingLeft: 16 }}>
-//             <Ionicons
-//               name="md-menu"
-//               size={30}
-//               color="black"
-//               onPress={() => navigation.toggleDrawer()}
-//             />
-//           </View>
-//         )
-//       };
-//     }
-//   }
-// );
-
-const AuthStack = createStackNavigator(
-  { LoginScreen, SignupScreen },
-  { headerMode: "none" }
-);
+const AuthStack = createStackNavigator({ LoginScreen }, { headerMode: "none" });
 
 const AppNavigatorContainer = createSwitchNavigator(
   {
