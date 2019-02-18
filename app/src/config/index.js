@@ -1,6 +1,5 @@
-import { androidClientId, iosClientId, androidStandaloneAppClientId } from "./google.config";
 import { APP_ID } from "./facebook.config";
-import { firebaseConfig } from "./firebase.config";
+import { firebaseConfig, db, initFirebase } from "./firebase.config";
 
 /**
 |--------------------------------------------------
@@ -8,4 +7,4 @@ import { firebaseConfig } from "./firebase.config";
 |--------------------------------------------------
 */
 
-export { androidClientId, iosClientId, APP_ID, firebaseConfig, androidStandaloneAppClientId };
+export { APP_ID, firebaseConfig, db, initFirebase };
