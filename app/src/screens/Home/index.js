@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { Text, View, Button } from "react-native";
-import * as firebase from "firebase";
-import { styles } from "../styles";
+import { Text, View } from "react-native";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
-import { signoutAction } from "../../store/actions/auth.action";
+import { styles } from "../styles";
 
 /**
 |--------------------------------------------------
@@ -13,35 +11,29 @@ import { signoutAction } from "../../store/actions/auth.action";
 */
 
 class HomeWithNav extends Component {
-  signout = async () => {
-    await this.props.signout();
-    await firebase.auth().signOut();
-    return this.props.navigation.navigate("LoginScreen");
-  };
-
   render() {
-    // console.log("userStatus>>>", this.props.userStatus);
     return (
       <View style={styles.container}>
-        <Text style={styles.fonts}> 🏠 Home </Text>
-        <Button title="Signout" onPress={() => this.signout()} />
+        <Text style={styles.fonts}>🏠 Home</Text>
+        <Text style={styles.fonts}>{this.props.user.uid}</Text>
       </View>
     );
   }
 }
 
-// const mapStateToProps = state => ({
-//   userStatus: state.authReducer.userStatus
-// });
+const mapStateToProps = state => ({
+  user: state.authReducer.user
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    signout: () => dispatch(signoutAction({ userStatus: false }))
-  };
-};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     signout: () => dispatch(signoutAction({ userStatus: false }))
+//   };
+// };
 
+// export const Home = withNavigation(HomeWithNav);
 export const Home = connect(
-  // mapStateToProps,
-  null,
-  mapDispatchToProps
+  mapStateToProps
+  // null,
+  // mapDispatchToProps
 )(withNavigation(HomeWithNav));
