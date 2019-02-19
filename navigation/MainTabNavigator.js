@@ -9,6 +9,7 @@ import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LinksScreen from "../screens/LinksScreen/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
+import ChatScreen from "../screens/ChatScreen/ChatScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -56,8 +57,23 @@ SettingsStack.navigationOptions = {
   )
 };
 
+const ChatScreenStack = createStackNavigator({
+  Chat: ChatScreen
+});
+
+ChatScreenStack.navigationOptions = {
+  tabBarLabel: "Chat",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === "ios" ? "md-chatboxes" : "md-chatboxes"}
+    />
+  )
+};
+
 export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
-  SettingsStack
+  SettingsStack,
+  ChatScreenStack
 });
