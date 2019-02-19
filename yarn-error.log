@@ -1,0 +1,61 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\mikej\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add redux redux-persist redux-thunk redux-promise-middleware
+
+PATH: 
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Python27\;C:\Python27\Scripts;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Docker\Docker\Resources\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;D:\SOFTWARE\sdk\build-tools;D:\SOFTWARE\sdk\platform-tools;C:\Program Files\Java\jdk1.8.0_201\bin;C:\Users\mikej\AppData\Local\Microsoft\WindowsApps;C:\Users\mikej\AppData\Roaming\npm;C:\Users\mikej\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\mikej\AppData\Local\.meteor;
+
+Yarn version: 
+  1.13.0
+
+Node version: 
+  10.15.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz: ESOCKETTIMEDOUT
+      at ClientRequest.<anonymous> (C:\Users\mikej\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:130024:19)
+      at Object.onceWrapper (events.js:273:13)
+      at ClientRequest.emit (events.js:182:13)
+      at TLSSocket.emitRequestTimeout (_http_client.js:662:40)
+      at Object.onceWrapper (events.js:273:13)
+      at TLSSocket.emit (events.js:182:13)
+      at TLSSocket.Socket._onTimeout (net.js:453:8)
+      at ontimeout (timers.js:436:11)
+      at tryOnTimeout (timers.js:300:5)
+      at listOnTimeout (timers.js:263:5)
+
+npm manifest: 
+  {
+    "main": "node_modules/expo/AppEntry.js",
+    "scripts": {
+      "start": "expo start",
+      "android": "expo start --android",
+      "ios": "expo start --ios",
+      "eject": "expo eject",
+      "test": "node ./node_modules/jest/bin/jest.js --watchAll"
+    },
+    "jest": {
+      "preset": "jest-expo"
+    },
+    "dependencies": {
+      "@expo/samples": "2.1.1",
+      "expo": "^32.0.0",
+      "firebase": "^5.8.2",
+      "react": "16.5.0",
+      "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+      "react-navigation": "^3.0.9"
+    },
+    "devDependencies": {
+      "babel-preset-expo": "^5.0.0",
+      "jest-expo": "^32.0.0"
+    },
+    "private": true
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
