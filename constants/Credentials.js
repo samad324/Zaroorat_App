@@ -1,13 +1,13 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyDUmj9p0eiwUxKKfNs_AvfVmp_sWCW3iK0",
-  authDomain: "izaan-rent-a-service.firebaseapp.com",
-  databaseURL: "https://izaan-rent-a-service.firebaseio.com",
-  projectId: "izaan-rent-a-service",
-  storageBucket: "izaan-rent-a-service.appspot.com",
-  messagingSenderId: "960419999677"
+  apiKey: "AIzaSyDMNcY8_6jANfrztPQB6KqbubDpEObRHWc",
+  authDomain: "nofikr-fyp.firebaseapp.com",
+  databaseURL: "https://nofikr-fyp.firebaseio.com",
+  projectId: "nofikr-fyp",
+  storageBucket: "nofikr-fyp.appspot.com",
+  messagingSenderId: "974050339093"
 };
 
 export const facebookConfig = {
-  appId: "2340121789556162",
-  appSecret: "61994d1f5a6a32fd17dbe26e8cdc014b"
+  appId: "829648040718922",
+  appSecret: "55385f336618cce71ad9ab25984c24fc"
 };
