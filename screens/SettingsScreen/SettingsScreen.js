@@ -1,14 +1,53 @@
-import React from "react";
-import { ExpoConfigView } from "@expo/samples";
+import React, { Component } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { connect } from "react-redux";
+import { onLogout } from "../../store/actions/authAction";
 
-export default class SettingsScreen extends React.Component {
+export class componentName extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
+
   static navigationOptions = {
-    title: "app.json"
+    title: "Settings"
+  };
+
+  logout = async () => {
+    const { onLogout, navigation } = this.props;
+    await onLogout();
+    navigation.navigate("Login");
   };
 
   render() {
-    /* Go ahead and delete ExpoConfigView and replace it with your
-     * content, we just wanted to give you a quick view of your config */
-    return <ExpoConfigView />;
+    return (
+      <View style={Styles.container}>
+        <TouchableOpacity onPress={this.logout}>
+          <Text>Logout</Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
 }
+
+const Styles = {
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  }
+};
+
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogout: () => dispatch(onLogout())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(componentName);

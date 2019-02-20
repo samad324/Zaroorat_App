@@ -1,13 +1,13 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyDtQadcrXUaSSkaCY2SnEQgm0jbWKid3Us",
-  authDomain: "saholatapp.firebaseapp.com",
-  databaseURL: "https://saholatapp.firebaseio.com",
-  projectId: "saholatapp",
-  storageBucket: "",
-  messagingSenderId: "541948867484"
+  apiKey: "AIzaSyDMNcY8_6jANfrztPQB6KqbubDpEObRHWc",
+  authDomain: "nofikr-fyp.firebaseapp.com",
+  databaseURL: "https://nofikr-fyp.firebaseio.com",
+  projectId: "nofikr-fyp",
+  storageBucket: "nofikr-fyp.appspot.com",
+  messagingSenderId: "974050339093"
 };
 
 export const facebookConfig = {
-  appId: "289021905123327",
+  appId: "829648040718922",
   appSecret: "55385f336618cce71ad9ab25984c24fc"
 };
