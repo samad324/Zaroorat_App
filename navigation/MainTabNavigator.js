@@ -10,6 +10,7 @@ import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LinksScreen from "../screens/LinksScreen/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
 import ChatScreen from "../screens/ChatScreen/ChatScreen";
+import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -67,6 +68,24 @@ ChatScreenStack.navigationOptions = {
     <TabBarIcon
       focused={focused}
       name={Platform.OS === "ios" ? "md-chatboxes" : "md-chatboxes"}
+      />
+  )
+};
+
+const ServicesScreen = createStackNavigator({
+  ServicesScreen: AddServicesScreen
+});
+
+ServicesScreen.navigationOptions = {
+  tabBarLabel: "Add Services",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === "ios"
+          ? `ios-information-circle${focused ? "" : "-outline"}`
+          : "md-information-circle"
+      }
     />
   )
 };
@@ -75,5 +94,6 @@ export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
-  ChatScreenStack
+  ChatScreenStack,
+  ServicesScreen
 });
