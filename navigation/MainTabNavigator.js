@@ -9,6 +9,7 @@ import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LinksScreen from "../screens/LinksScreen/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
+import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -56,8 +57,27 @@ SettingsStack.navigationOptions = {
   )
 };
 
+const ServicesScreen = createStackNavigator({
+  ServicesScreen: AddServicesScreen
+});
+
+ServicesScreen.navigationOptions = {
+  tabBarLabel: "Add Services",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === "ios"
+          ? `ios-information-circle${focused ? "" : "-outline"}`
+          : "md-information-circle"
+      }
+    />
+  )
+};
+
 export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
-  SettingsStack
+  SettingsStack,
+  ServicesScreen
 });
