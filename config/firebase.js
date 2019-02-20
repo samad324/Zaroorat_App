@@ -47,3 +47,7 @@ export const setUser = userData => {
     res.then(response => resolve(response)).catch(err => reject(err));
   });
 };
+
+export const setUserLocation = (location, uid) => {
+  return firestore.collection("users").doc(uid).set({ location }, { merge: true })
+}

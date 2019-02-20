@@ -1,18 +1,22 @@
 import React from "react";
 import { ScrollView, StyleSheet, View, Text, Alert } from "react-native";
 import { Icon, Item, Picker } from "native-base";
-import { Permissions, Contacts } from "expo";
+import { Permissions, Contacts, Location } from "expo";
+import { connect } from 'react-redux';
+
+import { setUserLocation } from '../../config/firebase';
 
 import { Styles } from "../LoginScreen/Styles";
 
-export default class LinksScreen extends React.Component {
+class LinksScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       service: "",
       selected2: "",
-      allContacts: []
+      allContacts: [],
+      selectedTerm: ""
     };
   }
 
@@ -20,10 +24,40 @@ export default class LinksScreen extends React.Component {
     title: "Links"
   };
 
+  getLocationAsync = async () => {
+    const { user } = this.props;
+
+    try {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+      if (status !== 'granted') {
+        alert("Ah! we can't access your location!")
+        this.setState({
+          errorMessage: 'Permission to access location was denied',
+        });
+      }
+
+
+      let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      }
+      
+      setUserLocation(coords, user.uid);
+      
+      this.setState({ location });
+    }
+    catch (e) {
+      console.log("e =>", e)
+    }
+  };
+
+
   onValueChange2(value) {
     this.setState({
       selected2: value
-    });
+    }, () => this.renderBySelection());
   }
 
   requestForPermissions = async () => {
@@ -82,28 +116,20 @@ export default class LinksScreen extends React.Component {
 
   searchBycontact = () => {
     this.requestForPermissions();
-    return (
-      <View>
-        <Text>searchBycontact</Text>
-      </View>
-    );
+    this.setState({ selectedTerm: "searchBycontact" });
   };
   searchByLocation = () => {
-    return (
-      <View>
-        <Text>searchByLocation</Text>
-      </View>
-    );
+    this.getLocationAsync();
+
+    this.setState({ selectedTerm: "searchByLocation" });
   };
   searchByCategory = () => {
-    return (
-      <View>
-        <Text>searchByCategory</Text>
-      </View>
-    );
+    this.setState({ selectedTerm: "SearchedByCategory" });
   };
 
   render() {
+    const { selectedTerm } = this.state;
+
     return (
       <ScrollView style={styles.container}>
         <View style={Styles.pickerConatiner}>
@@ -125,7 +151,11 @@ export default class LinksScreen extends React.Component {
             </Picker>
           </Item>
         </View>
-        <View>{this.renderBySelection()}</View>
+        <View>
+          <Text>
+            {selectedTerm}
+          </Text>
+        </View>
       </ScrollView>
     );
   }
@@ -138,3 +168,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    user: state.authReducer.user
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LinksScreen);
