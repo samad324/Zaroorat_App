@@ -62,7 +62,7 @@ const ServicesScreen = createStackNavigator({
 });
 
 ServicesScreen.navigationOptions = {
-  tabBarLabel: "Add Services",
+  tabBarLabel: "Services",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
