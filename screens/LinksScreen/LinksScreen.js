@@ -11,10 +11,10 @@ import {
   Right,
   Thumbnail
 } from "native-base";
-import { Permissions, Contacts,Location } from "expo";
+import { Permissions, Contacts, Location } from "expo";
 import { connect } from "react-redux";
 import { Styles } from "../LoginScreen/Styles";
-import { fetchServiceByUser,setUserLocation } from "../../config/firebase";
+import { fetchServiceByUser, setUserLocation } from "../../config/firebase";
 
 class LinksScreen extends React.Component {
   constructor(props) {
@@ -33,36 +33,6 @@ class LinksScreen extends React.Component {
   static navigationOptions = {
     title: "Links"
   };
-
-  getLocationAsync = async () => {
-    const { user } = this.props;
-
-    try {
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
-
-      if (status !== 'granted') {
-        alert("Ah! we can't access your location!")
-        this.setState({
-          errorMessage: 'Permission to access location was denied',
-        });
-      }
-
-
-      let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
-      const coords = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude
-      }
-      
-      setUserLocation(coords, user.uid);
-      
-      this.setState({ location });
-    }
-    catch (e) {
-      console.log("e =>", e)
-    }
-  };
-
 
   onValueChange2(value) {
     this.setState({
@@ -174,11 +144,11 @@ class LinksScreen extends React.Component {
       </View>
     );
   };
+  
   searchByLocation = () => {
-    this.getLocationAsync();
-
     this.setState({ selectedTerm: "searchByLocation" });
   };
+
   searchByCategory = () => {
     this.setState({ selectedTerm: "SearchedByCategory" });
   };
