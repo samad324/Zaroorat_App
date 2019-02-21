@@ -5,6 +5,8 @@ import Index from "./screens/Index";
 
 class App extends Component {
   render() {
+    console.disableYellowBox = true;
+    
     return (
       <Provider store={store}>
         <Index />

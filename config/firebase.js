@@ -26,7 +26,7 @@ export const loginWithFacebook = () => {
           const userData = {
             name: res.user.displayName,
             email: res.user.email,
-            photo: res.user.photoURL,
+            photo: `${res.user.photoURL}?type=large`,
             uid: res.user.uid,
             token
           };
@@ -81,3 +81,7 @@ export const fetchServices = users => {
   });
   return promises;
 };
+
+export const setUserLocation = (location, uid) => {
+  return firestore.collection("users").doc(uid).set({ location }, { merge: true })
+}
