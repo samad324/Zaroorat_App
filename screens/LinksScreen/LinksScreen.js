@@ -1,24 +1,42 @@
 import React from "react";
 import { ScrollView, StyleSheet, View, Text, Alert } from "react-native";
-import { Icon, Item, Picker } from "native-base";
+import {
+  Icon,
+  Item,
+  Picker,
+  List,
+  ListItem,
+  Left,
+  Body,
+  Right,
+  Thumbnail
+} from "native-base";
 import { Permissions, Contacts } from "expo";
+import { connect } from "react-redux";
 
 import { Styles } from "../LoginScreen/Styles";
+import { fetchServiceByUser } from "../../config/firebase";
 
-export default class LinksScreen extends React.Component {
+class LinksScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       service: "",
       selected2: "",
-      allContacts: []
+      allContacts: [],
+      filteredContact: [],
+      contactResults: []
     };
   }
 
   static navigationOptions = {
     title: "Links"
   };
+
+  componentDidMount() {
+    this.requestForPermissions();
+  }
 
   onValueChange2(value) {
     this.setState({
@@ -65,6 +83,29 @@ export default class LinksScreen extends React.Component {
     }
   };
 
+  filterContacts = async () => {
+    const { allUsers } = this.props;
+    const { allContacts } = this.state;
+
+    const filteredContact = await allUsers.filter(item =>
+      allContacts.includes(item.phoneNumber)
+    );
+
+    return filteredContact;
+  };
+
+  fetchAllContact = async () => {
+    const filteredContact = await this.filterContacts();
+    const result = [];
+    const services = await fetchServiceByUser(filteredContact);
+    services.forEach(item => {
+      item.forEach(item => {
+        result.push(item.data());
+      });
+    });
+    this.setState({ contactResults: result });
+  };
+
   renderBySelection = () => {
     const { selected2 } = this.state;
 
@@ -81,10 +122,29 @@ export default class LinksScreen extends React.Component {
   };
 
   searchBycontact = () => {
-    this.requestForPermissions();
+    const { contactResults } = this.state;
+
+    this.fetchAllContact();
     return (
       <View>
-        <Text>searchBycontact</Text>
+        <List>
+          {contactResults.map((item, index) => {
+            return (
+              <ListItem avatar key={index}>
+                <Left>
+                  <Thumbnail source={{ uri: item.thumbnail }} />
+                </Left>
+                <Body>
+                  <Text>{item.title}</Text>
+                  <Text note>{item.description}</Text>
+                </Body>
+                <Right>
+                  <Text note>{item.timeStamp}</Text>
+                </Right>
+              </ListItem>
+            );
+          })}
+        </List>
       </View>
     );
   };
@@ -138,3 +198,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   }
 });
+
+const mapStateToProps = state => ({
+  allUsers: state.authReducer.allUsers
+});
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LinksScreen);

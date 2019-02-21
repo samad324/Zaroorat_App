@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import { Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import { connect } from "react-redux";
 import { StackActions, NavigationActions } from "react-navigation";
-import { AppLoading } from "expo";
 
 import { Styles } from "./Styles";
-import { loginWithFacebook } from "../../config/firebase";
-import { onLogin } from "../../store/actions/authAction";
+import { loginWithFacebook, fetchAllUsers } from "../../config/firebase";
+import { onLogin, setAllUsers } from "../../store/actions/authAction";
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -27,12 +26,13 @@ class LoginScreen extends Component {
   }
 
   login = async () => {
-    const { onLogin } = this.props;
+    const { onLogin, setAllUsers } = this.props;
 
     this.setState({ isLoading: true });
 
     try {
       const res = await loginWithFacebook();
+      fetchAllUsers().then(users => setAllUsers(users));
       onLogin(res);
       this.setState({ isLoading: false });
       this.navigateToHome();
@@ -81,7 +81,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onLogin: payload => dispatch(onLogin(payload))
+    onLogin: payload => dispatch(onLogin(payload)),
+    setAllUsers: payload => dispatch(setAllUsers(payload))
   };
 };
 

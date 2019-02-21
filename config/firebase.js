@@ -47,3 +47,37 @@ export const setUser = userData => {
     res.then(response => resolve(response)).catch(err => reject(err));
   });
 };
+
+export const fetchAllUsers = () => {
+  return new Promise((resolve, reject) => {
+    const doc = firestore.collection("users").get();
+    doc
+      .then(response => {
+        const users = [];
+        response.forEach(user => {
+          users.push(user.data());
+        });
+        resolve(users);
+      })
+      .catch(err => reject(err));
+  });
+};
+
+export const fetchServiceByUser = users => {
+  return new Promise((resolve, reject) => {
+    const allPromises = fetchServices(users);
+    Promise.all(allPromises)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+export const fetchServices = users => {
+  const promises = users.map(item => {
+    return firestore
+      .collection("services")
+      .where("providerId", "==", item.uid)
+      .get();
+  });
+  return promises;
+};
