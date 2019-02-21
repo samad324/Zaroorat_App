@@ -1,4 +1,3 @@
-import {AsyncStorage} from 'react-native';
 import firebase from "firebase";
 import { firebaseConfig, facebookConfig } from "../constants/Credentials";
 import "firebase/firestore";
@@ -51,45 +50,59 @@ export const setUser = userData => {
   });
 };
 
-export const uploadImagesToStorage = (image) => {
-  console.log("images",image);
+export const uploadImagesToStorage = image => {
+  console.log("images", image);
   let storageRef = storage.ref();
   let promises = [];
-    promises.push(new Promise((resolve, reject) => {
+  promises.push(
+    new Promise((resolve, reject) => {
       const blob = new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.onload = function () {
+        xhr.onload = function() {
           resolve(xhr.response);
         };
-        xhr.onerror = function (e) {
-          reject(new TypeError('Network request failed'));
+        xhr.onerror = function(e) {
+          reject(new TypeError("Network request failed"));
         };
-        xhr.responseType = 'blob';
-        xhr.open('GET', image, true);
+        xhr.responseType = "blob";
+        xhr.open("GET", image, true);
         xhr.send(null);
-      })
+      });
 
       blob.then(result => {
         let imgRef = storageRef.child("/images/" + Math.random() + ".jpg");
-        imgRef.put(result)
-          .then(function (snapshot) {
-            imgRef.getDownloadURL().then(function (url) {
-              resolve(url)
-            })
-          }).catch(err => reject(err))
-      })
-    }))
-  
-  return promises;
-}
+        imgRef
+          .put(result)
+          .then(function(snapshot) {
+            imgRef.getDownloadURL().then(function(url) {
+              resolve(url);
+            });
+          })
+          .catch(err => reject(err));
+      });
+    })
+  );
 
-export const addServiceToFirestore = (providerId, title, category, phone, description, thumbnail) => {
-  return db.collection("services").doc(providerId.toString()).set({
-    providerId,
-    title,
-    category,
-    phone,
-    description,
-    thumbnail
-  })
-}
+  return promises;
+};
+
+export const addServiceToFirestore = (
+  providerId,
+  title,
+  category,
+  phone,
+  description,
+  thumbnail
+) => {
+  return db
+    .collection("services")
+    .doc(providerId.toString())
+    .set({
+      providerId,
+      title,
+      category,
+      phone,
+      description,
+      thumbnail
+    });
+};

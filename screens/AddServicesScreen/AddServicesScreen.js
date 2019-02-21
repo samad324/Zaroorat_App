@@ -14,10 +14,15 @@ import {
   AsyncStorage
 } from "react-native";
 import { ImagePicker } from "expo";
-import { Styles } from "./Styles";
-import { uploadImagesToStorage , addServiceToFirestore } from "../../config/firebase";
+import { connect } from "react-redux";
 
-export default class AddServicesScreen extends React.Component {
+import {
+  uploadImagesToStorage,
+  addServiceToFirestore
+} from "../../config/firebase";
+import { Styles } from "./Styles";
+
+class AddServicesScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
@@ -30,17 +35,21 @@ export default class AddServicesScreen extends React.Component {
       description: "",
       number: "",
       thumbnail: "",
-      loader : false
+      loader: false
     };
   }
 
   _pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 4]
-    });
-
-    console.log("result",result);
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        base64: true,
+        aspect: [4, 3]
+      });
+      console.log("result", result);
+    } catch (e) {
+      console.log(e);
+    }
 
     if (!result.cancelled) {
       this.setState({
@@ -50,8 +59,10 @@ export default class AddServicesScreen extends React.Component {
   };
 
   addService = async () => {
-    const { title , category , description , number , thumbnail } = this.state
-    
+    const { user } = this.props;
+
+    const { title, category, description, number, thumbnail } = this.state;
+
     // console.log("title" , title)
     // console.log("category" , category)
     // console.log("description" , description)
@@ -59,23 +70,30 @@ export default class AddServicesScreen extends React.Component {
     // console.log("thumbnail" , thumbnail)
 
     this.setState({
-      loader : true
-    })
+      loader: true
+    });
 
     const promises = uploadImagesToStorage(thumbnail);
 
     Promise.all(promises).then(res => {
-      addServiceToFirestore(1,title,category,number,description,res).then(() => {
+      addServiceToFirestore(
+        user.uid,
+        title,
+        category,
+        number,
+        description,
+        res
+      ).then(() => {
         alert("Added Successfully.....");
         this.setState({
-          loader : false
-        })
+          loader: false
+        });
       });
-    })
-  }
+    });
+  };
 
   render() {
-    const { category , loader } = this.state;
+    const { category, loader } = this.state;
 
     return (
       <View style={Styles.container}>
@@ -106,7 +124,7 @@ export default class AddServicesScreen extends React.Component {
           <TextInput
             placeholder="Enter Phone Number....."
             style={Styles.textInput}
-            keyboardType='numeric'
+            keyboardType="numeric"
             onChangeText={text => this.setState({ number: text })}
           />
 
@@ -118,18 +136,40 @@ export default class AddServicesScreen extends React.Component {
             multiline={true}
           />
 
-          <TouchableOpacity style={Styles.btnBrowseImage} onPress={this._pickImage}>
+          <TouchableOpacity
+            style={Styles.btnBrowseImage}
+            onPress={this._pickImage}
+          >
             <Text style={Styles.txtBrowseImage}>Select Image</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={Styles.btnAddService} onPress={this.addService}>
-            {!loader ?  <Text style={Styles.txtAddService}>Add</Text> 
-            : 
-            <ActivityIndicator size="small" color="#0000ff" />
-            }
+          <TouchableOpacity
+            style={Styles.btnAddService}
+            onPress={this.addService}
+          >
+            {!loader ? (
+              <Text style={Styles.txtAddService}>Add</Text>
+            ) : (
+              <ActivityIndicator size="small" color="#0000ff" />
+            )}
           </TouchableOpacity>
         </View>
       </View>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.authReducer.user
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddServicesScreen);
