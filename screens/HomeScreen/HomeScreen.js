@@ -11,6 +11,8 @@ import {
 import { WebBrowser, Permissions, Location } from "expo";
 import { connect } from 'react-redux';
 import { setAllUsers } from '../../store/actions/authAction';
+import firebase from "firebase";
+import "firebase/firestore";
 
 import { MonoText } from "../../components/StyledText";
 
@@ -35,10 +37,18 @@ class HomeScreen extends React.Component {
 
   async fetchAllUsersRealTime() {
     const { setAllUsers } = this.props;
+    
     try {
-      const allUsers = await fetchAllUsers();
-      console.log("allUsers =>", allUsers)
-      setAllUsers(allUsers);
+      const doc = firebase.firestore().collection("users");
+      doc.onSnapshot(snapshot => {
+        const allUsers = [];
+
+        snapshot.forEach(data => {
+          allUsers.push(data.data())
+        })
+
+        setAllUsers(allUsers);
+      })
     }
     catch (e) {
       alert("Error")
