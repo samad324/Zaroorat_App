@@ -8,11 +8,17 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { WebBrowser } from "expo";
+import { WebBrowser, Permissions, Location } from "expo";
+import { connect } from 'react-redux';
+import { setAllUsers } from '../../store/actions/authAction';
+import firebase from "firebase";
+import "firebase/firestore";
 
 import { MonoText } from "../../components/StyledText";
 
-export default class HomeScreen extends React.Component {
+import { setUserLocation, fetchAllUsers } from "../../config/firebase";
+
+class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -22,6 +28,61 @@ export default class HomeScreen extends React.Component {
 
   static navigationOptions = {
     header: null
+  };
+
+  componentDidMount() {
+    this.getLocationAsync();
+    this.fetchAllUsersRealTime();
+  }
+
+  async fetchAllUsersRealTime() {
+    const { setAllUsers } = this.props;
+    
+    try {
+      const doc = firebase.firestore().collection("users");
+      doc.onSnapshot(snapshot => {
+        const allUsers = [];
+
+        snapshot.forEach(data => {
+          allUsers.push(data.data())
+        })
+
+        setAllUsers(allUsers);
+      })
+    }
+    catch (e) {
+      alert("Error")
+      console.log("e =>", e)
+    }
+  }
+
+  getLocationAsync = async () => {
+    const { user } = this.props;
+
+    try {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+      if (status !== 'granted') {
+        alert("Ah! we can't access your location!")
+        this.setState({
+          errorMessage: 'Permission to access location was denied',
+        });
+      }
+
+
+      let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      }
+
+      setUserLocation(coords, user.uid);
+
+      this.setState({ location });
+    }
+    catch (e) {
+      console.log("e =>", e)
+    }
   };
 
   render() {
@@ -213,3 +274,20 @@ const styles = StyleSheet.create({
     color: "#2e78b7"
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    user: state.authReducer.user,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setAllUsers: payload => dispatch(setAllUsers(payload))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeScreen);

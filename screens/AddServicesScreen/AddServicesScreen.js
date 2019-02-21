@@ -47,15 +47,17 @@ class AddServicesScreen extends React.Component {
         aspect: [4, 3]
       });
       console.log("result", result);
+      
+      if (!result.cancelled) {
+        this.setState({
+          thumbnail: result.uri
+        }, () => console.log("state set =>", this.state.thumbnail));
+      }
     } catch (e) {
       console.log(e);
     }
 
-    if (!result.cancelled) {
-      this.setState({
-        thumbnail: result.uri
-      });
-    }
+
   };
 
   addService = async () => {
@@ -63,11 +65,11 @@ class AddServicesScreen extends React.Component {
 
     const { title, category, description, number, thumbnail } = this.state;
 
-    // console.log("title" , title)
-    // console.log("category" , category)
-    // console.log("description" , description)
-    // console.log("number" , number)
-    // console.log("thumbnail" , thumbnail)
+    console.log("title", title)
+    console.log("category", category)
+    console.log("description", description)
+    console.log("number", number)
+    console.log("thumbnail", thumbnail)
 
     this.setState({
       loader: true
@@ -82,7 +84,12 @@ class AddServicesScreen extends React.Component {
         category,
         number,
         description,
+<<<<<<< HEAD
         res[0]
+=======
+        res[0],
+        Date.now()
+>>>>>>> b48b898ff7764789c962dc4f94dfc5bbd5e66eb4
       ).then(() => {
         alert("Added Successfully.....");
         this.setState({
@@ -150,8 +157,8 @@ class AddServicesScreen extends React.Component {
             {!loader ? (
               <Text style={Styles.txtAddService}>Add</Text>
             ) : (
-              <ActivityIndicator size="small" color="#0000ff" />
-            )}
+                <ActivityIndicator size="small" color="#0000ff" />
+              )}
           </TouchableOpacity>
         </View>
       </View>
