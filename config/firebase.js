@@ -98,10 +98,10 @@ export const uploadImagesToStorage = image => {
     new Promise((resolve, reject) => {
       const blob = new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.onload = function () {
+        xhr.onload = function() {
           resolve(xhr.response);
         };
-        xhr.onerror = function (e) {
+        xhr.onerror = function(e) {
           reject(new TypeError("Network request failed"));
         };
         xhr.responseType = "blob";
@@ -113,8 +113,8 @@ export const uploadImagesToStorage = image => {
         let imgRef = storageRef.child("/images/" + Math.random() + ".jpg");
         imgRef
           .put(result)
-          .then(function (snapshot) {
-            imgRef.getDownloadURL().then(function (url) {
+          .then(function(snapshot) {
+            imgRef.getDownloadURL().then(function(url) {
               resolve(url);
             });
           })
@@ -135,30 +135,13 @@ export const addServiceToFirestore = (
   thumbnail,
   timeStamp
 ) => {
-  return firestore
-    .collection("services")
-    .add({
-      providerId,
-      title,
-      category,
-      phone,
-      description,
-      thumbnail,
-      timeStamp
-    });
-};
-
-export const getCategories = () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const rawCategories = await firestore.collection("categories").get();
-      const allCategory = [];
-      rawCategories.forEach(category => {
-        allCategory.push(category.data());
-      });
-      resolve(allCategory);
-    } catch (e) {
-      reject(e);
-    }
+  return firestore.collection("services").add({
+    providerId,
+    title,
+    category,
+    phone,
+    description,
+    thumbnail,
+    timeStamp
   });
 };
