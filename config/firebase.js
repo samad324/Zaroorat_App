@@ -45,7 +45,7 @@ export const loginWithFacebook = () => {
 export const setUser = userData => {
   return new Promise((resolve, reject) => {
     const doc = firestore.collection("users").doc(userData.uid);
-    const res = doc.set(userData);
+    const res = doc.set(userData, { merge: true });
     res.then(response => resolve(response)).catch(err => reject(err));
   });
 };

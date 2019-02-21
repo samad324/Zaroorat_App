@@ -13,6 +13,8 @@ import {
 } from "native-base";
 import { Permissions, Contacts, Location } from "expo";
 import { connect } from "react-redux";
+import moment from "moment";
+
 import { Styles } from "../LoginScreen/Styles";
 import { fetchServiceByUser, setUserLocation } from "../../config/firebase";
 
@@ -34,10 +36,17 @@ class LinksScreen extends React.Component {
     title: "Links"
   };
 
+  componentDidMount() {
+    this.requestForPermissions();
+  }
+
   onValueChange2(value) {
-    this.setState({
-      selected2: value
-    }, () => this.renderBySelection());
+    this.setState(
+      {
+        selected2: value
+      },
+      () => this.renderBySelection()
+    );
   }
 
   requestForPermissions = async () => {
@@ -75,6 +84,7 @@ class LinksScreen extends React.Component {
         number = number.replace(/ /g, "");
         return number;
       });
+
       this.setState({ allContacts: arr });
     }
   };
@@ -82,7 +92,6 @@ class LinksScreen extends React.Component {
   filterContacts = async () => {
     const { allUsers } = this.props;
     const { allContacts } = this.state;
-
     const filteredContact = await allUsers.filter(item =>
       allContacts.includes(item.phoneNumber)
     );
@@ -99,6 +108,7 @@ class LinksScreen extends React.Component {
         result.push(item.data());
       });
     });
+    console.log(result);
     this.setState({ contactResults: result });
   };
 
@@ -118,33 +128,9 @@ class LinksScreen extends React.Component {
   };
 
   searchBycontact = () => {
-    const { contactResults } = this.state;
-
     this.fetchAllContact();
-    return (
-      <View>
-        <List>
-          {contactResults.map((item, index) => {
-            return (
-              <ListItem avatar key={index}>
-                <Left>
-                  <Thumbnail source={{ uri: item.thumbnail }} />
-                </Left>
-                <Body>
-                  <Text>{item.title}</Text>
-                  <Text note>{item.description}</Text>
-                </Body>
-                <Right>
-                  <Text note>{item.timeStamp}</Text>
-                </Right>
-              </ListItem>
-            );
-          })}
-        </List>
-      </View>
-    );
   };
-  
+
   searchByLocation = () => {
     this.setState({ selectedTerm: "searchByLocation" });
   };
@@ -154,7 +140,7 @@ class LinksScreen extends React.Component {
   };
 
   render() {
-    const { selectedTerm } = this.state;
+    const { contactResults } = this.state;
 
     return (
       <ScrollView style={styles.container}>
@@ -178,9 +164,26 @@ class LinksScreen extends React.Component {
           </Item>
         </View>
         <View>
-          <Text>
-            {selectedTerm}
-          </Text>
+          <View>
+            <List>
+              {contactResults.map((item, index) => {
+                return (
+                  <ListItem avatar key={index}>
+                    <Left>
+                      <Thumbnail source={{ uri: item.thumbnail }} />
+                    </Left>
+                    <Body>
+                      <Text>{item.title}</Text>
+                      <Text note>{item.description}</Text>
+                    </Body>
+                    <Right>
+                      <Text note>{moment(item.timeStamp).fromNow()}</Text>
+                    </Right>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </View>
         </View>
       </ScrollView>
     );
@@ -194,7 +197,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   }
 });
-
 
 const mapStateToProps = state => {
   return {
