@@ -13,6 +13,8 @@ import { Feather } from "@expo/vector-icons";
 import { ImagePicker } from "expo";
 import { connect } from "react-redux";
 
+import { onLogout } from "../../store/actions/authAction";
+
 import { uploadImagesToStorage, setUser } from "../../config/firebase";
 
 class Profile extends Component {
@@ -54,20 +56,22 @@ class Profile extends Component {
 
   saveData = async () => {
     const { thumbnail, phNumber } = this.state;
-    
-    const  {uid} = this.props.user 
+
+    const { uid } = this.props.user;
 
     const promises = uploadImagesToStorage(thumbnail);
 
     Promise.all(promises).then(res => {
-      setUser({ photo: res[0], phoneNumber: phNumber, uid   }).then(() => {
-        alert("Added Successfully.....");
-        // this.setState({
-        //   loader: false
-        // });
-      }).catch((e) => {
-          console.log(e)
-      })
+      setUser({ photo: res[0], phoneNumber: phNumber, uid })
+        .then(() => {
+          alert("Added Successfully.....");
+          // this.setState({
+          //   loader: false
+          // });
+        })
+        .catch(e => {
+          console.log(e);
+        });
     });
   };
 
@@ -94,29 +98,45 @@ class Profile extends Component {
                 Profile Image <Feather name="edit-2" size={24} />
               </Text>
             </TouchableOpacity>
-
-            <TextInput
-              keyboardType="numeric"
-              style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-              onChangeText={phNumber => this.setState({ phNumber })}
-              value={this.state.text}
-            />
-
-            {/* <TouchableOpacity
-              onPress={() => this.setState({ editNumber: true })}
-            >
-              <Text>
-                Phone Number <Feather name="edit-2" size={24} />
-              </Text>
-            </TouchableOpacity> */}
-
+            {!editNumber ? (
+              <TouchableOpacity
+                onPress={() => this.setState({ editNumber: true })}
+              >
+                <Text>
+                  Phone Number <Feather name="edit-2" size={24} />
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TextInput
+                keyboardType="numeric"
+                placeholder="Number"
+                style={{
+                  height: 40,
+                  borderColor: "gray",
+                  borderWidth: 1,
+                  width: "50%"
+                }}
+                onChangeText={phNumber => this.setState({ phNumber })}
+                value={this.state.text}
+              />
+            )}
             <Text style={styles.name}>{name}</Text>
+            {/* {thumbnail || */}
+            {/* //   (editNumber && ( */}
             <TouchableOpacity
               style={styles.buttonContainer}
               onPress={() => this.saveData()}
             >
               <Text>Update Data</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => this.onLogout()}
+            >
+              <Text>Logout</Text>
+            </TouchableOpacity>
+
+            {/* //   ))} */}
           </View>
         </View>
       </ScrollView>
