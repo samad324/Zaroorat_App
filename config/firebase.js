@@ -18,12 +18,13 @@ export const loginWithFacebook = () => {
       }
     );
     if (type === "success") {
+
       const credencials = firebase.auth.FacebookAuthProvider.credential(token);
-      console.log(credencials);
+      // console.log(credencials);
       auth
         .signInAndRetrieveDataWithCredential(credencials)
         .then(res => {
-          console.log(res);
+          // console.log(res, "?????");
           // AsyncStorage.setItem('providerId',res.user.uid);
           const userData = {
             name: res.user.displayName,
