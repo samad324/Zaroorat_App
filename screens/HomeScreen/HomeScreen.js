@@ -10,10 +10,11 @@ import {
 } from "react-native";
 import { WebBrowser, Permissions, Location } from "expo";
 import { connect } from 'react-redux';
+import { setAllUsers } from '../../store/actions/authAction';
 
 import { MonoText } from "../../components/StyledText";
 
-import { setUserLocation } from "../../config/firebase";
+import { setUserLocation, fetchAllUsers } from "../../config/firebase";
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -29,6 +30,20 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.getLocationAsync();
+    this.fetchAllUsersRealTime();
+  }
+
+  async fetchAllUsersRealTime() {
+    const { setAllUsers } = this.props;
+    try {
+      const allUsers = await fetchAllUsers();
+      console.log("allUsers =>", allUsers)
+      setAllUsers(allUsers);
+    }
+    catch (e) {
+      alert("Error")
+      console.log("e =>", e)
+    }
   }
 
   getLocationAsync = async () => {
@@ -257,7 +272,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    setAllUsers: payload => dispatch(setAllUsers(payload))
+  };
 };
 
 export default connect(
