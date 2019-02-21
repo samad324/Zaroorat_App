@@ -68,21 +68,12 @@ export const fetchAllUsers = () => {
 
 export const fetchServiceByUser = users => {
   return new Promise((resolve, reject) => {
-    const allPromises = fetchServices(users);
+    const uid_s = users.map(user => user.uid);
+    const allPromises = fetchServices("providerId", uid_s);
     Promise.all(allPromises)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
-};
-
-export const fetchServices = users => {
-  const promises = users.map(item => {
-    return firestore
-      .collection("services")
-      .where("providerId", "==", item.uid)
-      .get();
-  });
-  return promises;
 };
 
 export const setUserLocation = (location, uid) => {
@@ -150,3 +141,22 @@ export const addServiceToFirestore = (
 export const sendContract = async (payload) => {
   return firestore.collection("contract").add(payload)
 }
+export const fetchServiceByCategory = async category => {
+  return new Promise(async (resolve, reject) => {
+    const allPromises = await fetchServices("category", [category]);
+    Promise.all(allPromises)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+export const fetchServices = (key, value) => {
+  console.log(key, value);
+  const promises = value.map(item => {
+    return firestore
+      .collection("services")
+      .where(key, "==", item)
+      .get();
+  });
+  return promises;
+};
