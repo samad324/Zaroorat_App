@@ -6,20 +6,29 @@ import {
   View,
   Image,
   TouchableOpacity,
-  TouchableHighlight
+  TouchableHighlight,
+  TextInput
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { ImagePicker } from "expo";
+import { connect } from "react-redux";
 
-import { uploadImagesToStorage } from "../../config/firebase";
+import { uploadImagesToStorage, setUser } from "../../config/firebase";
 
-export default class Profile extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      thumbnail: ""
+      thumbnail: "",
+      phNumber: "",
+      editNumber: false
     };
+  }
+
+  componentDidMount() {
+    console.log(this.props.user.name);
+    console.log(this.props.user.photo);
   }
 
   _pickImage = async () => {
@@ -29,38 +38,44 @@ export default class Profile extends Component {
         base64: true,
         aspect: [4, 3]
       });
-      console.log("result", result);
+
+      if (!result.cancelled) {
+        this.setState(
+          {
+            thumbnail: result.uri
+          },
+          () => console.log("state set =>", this.state.thumbnail)
+        );
+      }
     } catch (e) {
       console.log(e);
     }
+  };
 
-    if (!result.cancelled) {
-      this.setState({
-        thumbnail: result.uri
-        // const promises = uploadImagesToStorage(thumbnail);
+  saveData = async () => {
+    const { thumbnail, phNumber } = this.state;
+    
+    const  {uid} = this.props.user 
 
-        // Promise.all(promises).then(res => {
-        //   (
-        //     user.uid,
-        //     title,
-        //     category,
-        //     number,
-        //     description,
-        //     res[0]
-        //   ).then(() => {
-        //     alert("Added Successfully.....");
-        //     this.setState({
-        //       loader: false
-        //     });
-        //   });
+    const promises = uploadImagesToStorage(thumbnail);
+
+    Promise.all(promises).then(res => {
+      setUser({ photo: res[0], phoneNumber: phNumber, uid   }).then(() => {
+        alert("Added Successfully.....");
+        // this.setState({
+        //   loader: false
         // });
-      });
-    }
-    console.log(this.state.thumbnail , "<cheking>");
+      }).catch((e) => {
+          console.log(e)
+      })
+    });
   };
 
   render() {
-    const { thumbnail } = this.state;
+    const { thumbnail, editNumber, phNumber } = this.state;
+    const { name, photo } = this.props.user;
+
+    console.log(phNumber, "phNumber");
 
     return (
       <ScrollView style={styles.container}>
@@ -68,36 +83,39 @@ export default class Profile extends Component {
         <Image
           style={styles.avatar}
           source={{
-            uri: thumbnail
-              ? thumbnail
-              : "https://bootdey.com/img/Content/avatar/avatar6.png"
+            uri: thumbnail ? thumbnail : photo
           }}
         />
 
         <View style={styles.body}>
           <View style={styles.bodyContent}>
-            <TouchableHighlight onPress={() => this._pickImage()}>
-              <Text>Profile Image </Text>
-            </TouchableHighlight>
-            {/* {thumbnail && (
-              <TouchableHighlight onPress={() => this._pickImage()}>
-                <Text>Upload </Text>
-              </TouchableHighlight>
-            )} */}
-
-            <Text style={styles.name}>John Doe</Text>
-
-            <Text style={styles.info}>UX Designer / Mobile developer</Text>
-            <Text style={styles.description}>
-              Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum
-              electram expetendis, omittam deseruisse consequuntur ius an,
-            </Text>
-
-            <TouchableOpacity style={styles.buttonContainer}>
-              <Text>Opcion 1</Text>
+            <TouchableOpacity onPress={() => this._pickImage()}>
+              <Text>
+                Profile Image <Feather name="edit-2" size={24} />
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonContainer}>
-              <Text>Opcion 2</Text>
+
+            <TextInput
+              keyboardType="numeric"
+              style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
+              onChangeText={phNumber => this.setState({ phNumber })}
+              value={this.state.text}
+            />
+
+            {/* <TouchableOpacity
+              onPress={() => this.setState({ editNumber: true })}
+            >
+              <Text>
+                Phone Number <Feather name="edit-2" size={24} />
+              </Text>
+            </TouchableOpacity> */}
+
+            <Text style={styles.name}>{name}</Text>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => this.saveData()}
+            >
+              <Text>Update Data</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -105,6 +123,21 @@ export default class Profile extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.authReducer.user
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Profile);
 
 const styles = StyleSheet.create({
   header: {
