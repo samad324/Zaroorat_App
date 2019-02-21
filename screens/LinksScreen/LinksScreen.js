@@ -16,7 +16,10 @@ import { connect } from "react-redux";
 import moment from "moment";
 
 import { Styles } from "../LoginScreen/Styles";
-import { fetchServiceByUser, setUserLocation } from "../../config/firebase";
+import {
+  fetchServiceByUser,
+  fetchServiceByCategory
+} from "../../config/firebase";
 
 class LinksScreen extends React.Component {
   constructor(props) {
@@ -40,14 +43,30 @@ class LinksScreen extends React.Component {
     this.requestForPermissions();
   }
 
-  onValueChange2(value) {
-    this.setState(
-      {
-        selected2: value
-      },
-      () => this.renderBySelection()
+  onValueChange2(key, value) {
+    this.setState({ [key]: value, contactResults: [] }, () =>
+      this.renderBySelection()
     );
   }
+
+  onCategoryChange = async (key, value) => {
+    this.setState({ [key]: value, contactResults: [] }, async () => {
+      this.renderBySelection();
+      try {
+        const services = await fetchServiceByCategory(value);
+        const result = [];
+        services.forEach(item => {
+          item.forEach(item => {
+            result.push(item.data());
+          });
+        });
+        console.log("ress", result);
+        this.setState({ contactResults: result });
+      } catch (e) {
+        alert(e.message);
+      }
+    });
+  };
 
   requestForPermissions = async () => {
     const permission = await Permissions.askAsync(Permissions.CONTACTS);
@@ -141,6 +160,7 @@ class LinksScreen extends React.Component {
 
   render() {
     const { contactResults, selected2 } = this.state;
+    const { allCategories } = this.props;
 
     return (
       <ScrollView style={styles.container}>
@@ -154,7 +174,7 @@ class LinksScreen extends React.Component {
               placeholderStyle={{ color: "#bfc6ea" }}
               placeholderIconColor="#007aff"
               selectedValue={this.state.selected2}
-              onValueChange={this.onValueChange2.bind(this)}
+              onValueChange={this.onValueChange2.bind(this, "selected2")}
             >
               <Picker.Item label="Search" value="" />
               <Picker.Item label="Search by Contacts" value="contacts" />
@@ -163,26 +183,35 @@ class LinksScreen extends React.Component {
             </Picker>
           </Item>
         </View>
+        {selected2 == "categories" && (
+          <View style={Styles.pickerConatiner}>
+            <Item picker>
+              <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                style={{ width: undefined }}
+                placeholder="Select your SIM"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.selectedCategory}
+                onValueChange={this.onCategoryChange.bind(
+                  this,
+                  "selectedCategory"
+                )}
+              >
+                <Picker.Item label="Select Category" value="" />
+                {allCategories.map((category, index) => (
+                  <Picker.Item
+                    label={category.name}
+                    value={category.name}
+                    key={index}
+                  />
+                ))}
+              </Picker>
+            </Item>
+          </View>
+        )}
 
-        <View style={Styles.pickerConatiner}>
-          <Item picker>
-            <Picker
-              mode="dropdown"
-              iosIcon={<Icon name="arrow-down" />}
-              style={{ width: undefined }}
-              placeholder="Select your SIM"
-              placeholderStyle={{ color: "#bfc6ea" }}
-              placeholderIconColor="#007aff"
-              selectedValue={this.state.selected2}
-              onValueChange={this.onValueChange2.bind(this)}
-            >
-              <Picker.Item label="Select Category" value="" />
-              <Picker.Item label="Search by Contacts" value="contacts" />
-              <Picker.Item label="Search by Location" value="location" />
-              <Picker.Item label="Search by Categories" value="categories" />
-            </Picker>
-          </Item>
-        </View>
         <View>
           <View>
             <List>
@@ -221,7 +250,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     user: state.authReducer.user,
-    allUsers: state.authReducer.allUsers
+    allUsers: state.authReducer.allUsers,
+    allCategories: state.generalReducer.allCategories
   };
 };
 
