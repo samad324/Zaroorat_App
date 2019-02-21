@@ -198,7 +198,7 @@ class LinksScreen extends React.Component {
   };
 
   render() {
-    const { contactResults } = this.state;
+    const { contactResults, selected2 } = this.state;
 
     return (
       <ScrollView style={styles.container}>
@@ -215,6 +215,26 @@ class LinksScreen extends React.Component {
               onValueChange={this.onValueChange2.bind(this)}
             >
               <Picker.Item label="Search" value="" />
+              <Picker.Item label="Search by Contacts" value="contacts" />
+              <Picker.Item label="Search by Location" value="location" />
+              <Picker.Item label="Search by Categories" value="categories" />
+            </Picker>
+          </Item>
+        </View>
+
+        <View style={Styles.pickerConatiner}>
+          <Item picker>
+            <Picker
+              mode="dropdown"
+              iosIcon={<Icon name="arrow-down" />}
+              style={{ width: undefined }}
+              placeholder="Select your SIM"
+              placeholderStyle={{ color: "#bfc6ea" }}
+              placeholderIconColor="#007aff"
+              selectedValue={this.state.selected2}
+              onValueChange={this.onValueChange2.bind(this)}
+            >
+              <Picker.Item label="Select Category" value="" />
               <Picker.Item label="Search by Contacts" value="contacts" />
               <Picker.Item label="Search by Location" value="location" />
               <Picker.Item label="Search by Categories" value="categories" />

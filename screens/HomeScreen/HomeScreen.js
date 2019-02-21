@@ -9,21 +9,22 @@ import {
   View
 } from "react-native";
 import { WebBrowser, Permissions, Location } from "expo";
-import { connect } from 'react-redux';
-import { setAllUsers } from '../../store/actions/authAction';
+import { connect } from "react-redux";
 import firebase from "firebase";
 import "firebase/firestore";
 
+import { setAllUsers } from "../../store/actions/authAction";
+import { styles } from "./Styles";
 import { MonoText } from "../../components/StyledText";
+import { setAllCategories } from "../../store/actions/generalAction";
 
-import { setUserLocation, fetchAllUsers } from "../../config/firebase";
+import { setUserLocation } from "../../config/firebase";
 
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {};
-    console.disableYellowBox = true;
   }
 
   static navigationOptions = {
@@ -33,28 +34,48 @@ class HomeScreen extends React.Component {
   componentDidMount() {
     this.getLocationAsync();
     this.fetchAllUsersRealTime();
+    this.getCategories();
   }
 
   async fetchAllUsersRealTime() {
     const { setAllUsers } = this.props;
-    
+
     try {
       const doc = firebase.firestore().collection("users");
       doc.onSnapshot(snapshot => {
         const allUsers = [];
 
         snapshot.forEach(data => {
-          allUsers.push(data.data())
-        })
+          allUsers.push(data.data());
+        });
 
         setAllUsers(allUsers);
-      })
-    }
-    catch (e) {
-      alert("Error")
-      console.log("e =>", e)
+      });
+    } catch (e) {
+      alert("Error");
+      console.log("e =>", e);
     }
   }
+
+  getCategories = async () => {
+    const { setAllCategories } = this.props;
+
+    try {
+      const doc = firebase.firestore().collection("categories");
+      doc.onSnapshot(snapshot => {
+        const allCategory = [];
+
+        snapshot.forEach(data => {
+          allCategory.push(data.data());
+        });
+
+        setAllCategories(allCategory);
+      });
+    } catch (e) {
+      alert("Error");
+      console.log("e =>", e);
+    }
+  };
 
   getLocationAsync = async () => {
     const { user } = this.props;
@@ -62,26 +83,26 @@ class HomeScreen extends React.Component {
     try {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
 
-      if (status !== 'granted') {
-        alert("Ah! we can't access your location!")
+      if (status !== "granted") {
+        alert("Ah! we can't access your location!");
         this.setState({
-          errorMessage: 'Permission to access location was denied',
+          errorMessage: "Permission to access location was denied"
         });
       }
 
-
-      let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+      let location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true
+      });
       const coords = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude
-      }
+      };
 
       setUserLocation(coords, user.uid);
 
       this.setState({ location });
-    }
-    catch (e) {
-      console.log("e =>", e)
+    } catch (e) {
+      console.log("e =>", e);
     }
   };
 
@@ -186,103 +207,17 @@ class HomeScreen extends React.Component {
   };
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff"
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: "rgba(0,0,0,0.4)",
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: "center"
-  },
-  contentContainer: {
-    paddingTop: 30
-  },
-  welcomeContainer: {
-    alignItems: "center",
-    marginTop: 10,
-    marginBottom: 20
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: "contain",
-    marginTop: 3,
-    marginLeft: -10
-  },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50
-  },
-  homeScreenFilename: {
-    marginVertical: 7
-  },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)"
-  },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center"
-  },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3
-      },
-      android: {
-        elevation: 20
-      }
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
-    paddingVertical: 20
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center"
-  },
-  navigationFilename: {
-    marginTop: 5
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: "center"
-  },
-  helpLink: {
-    paddingVertical: 15
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: "#2e78b7"
-  }
-});
-
 const mapStateToProps = state => {
   return {
     user: state.authReducer.user,
+    allUsers: state.authReducer.allUsers,
+    allCategories: state.generalReducer.allCategories
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    setAllCategories: payload => dispatch(setAllCategories(payload)),
     setAllUsers: payload => dispatch(setAllUsers(payload))
   };
 };
