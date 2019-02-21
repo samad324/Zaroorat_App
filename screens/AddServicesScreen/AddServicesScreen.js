@@ -82,7 +82,7 @@ class AddServicesScreen extends React.Component {
         category,
         number,
         description,
-        res
+        res[0]
       ).then(() => {
         alert("Added Successfully.....");
         this.setState({

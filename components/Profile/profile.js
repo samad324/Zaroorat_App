@@ -9,29 +9,84 @@ import {
   TouchableHighlight
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { ImagePicker } from "expo";
 
 import { uploadImagesToStorage } from "../../config/firebase";
 
 export default class Profile extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      thumbnail: ""
+    };
+  }
+
+  _pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        base64: true,
+        aspect: [4, 3]
+      });
+      console.log("result", result);
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (!result.cancelled) {
+      this.setState({
+        thumbnail: result.uri
+        // const promises = uploadImagesToStorage(thumbnail);
+
+        // Promise.all(promises).then(res => {
+        //   (
+        //     user.uid,
+        //     title,
+        //     category,
+        //     number,
+        //     description,
+        //     res[0]
+        //   ).then(() => {
+        //     alert("Added Successfully.....");
+        //     this.setState({
+        //       loader: false
+        //     });
+        //   });
+        // });
+      });
+    }
+    console.log(this.state.thumbnail , "<cheking>");
+  };
+
   render() {
+    const { thumbnail } = this.state;
+
     return (
       <ScrollView style={styles.container}>
         <View style={styles.header} />
-        <TouchableHighlight
+        <Image
           style={styles.avatar}
-          onPress={() => alert("Upload Image!!!")}
-        >
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: "https://bootdey.com/img/Content/avatar/avatar6.png"
-            }}
-          />
-          {/* <AntDesign name="edit" size={32} /> */}
-        </TouchableHighlight>
+          source={{
+            uri: thumbnail
+              ? thumbnail
+              : "https://bootdey.com/img/Content/avatar/avatar6.png"
+          }}
+        />
+
         <View style={styles.body}>
           <View style={styles.bodyContent}>
+            <TouchableHighlight onPress={() => this._pickImage()}>
+              <Text>Profile Image </Text>
+            </TouchableHighlight>
+            {/* {thumbnail && (
+              <TouchableHighlight onPress={() => this._pickImage()}>
+                <Text>Upload </Text>
+              </TouchableHighlight>
+            )} */}
+
             <Text style={styles.name}>John Doe</Text>
+
             <Text style={styles.info}>UX Designer / Mobile developer</Text>
             <Text style={styles.description}>
               Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum
