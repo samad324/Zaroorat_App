@@ -11,6 +11,7 @@ import LinksScreen from "../screens/LinksScreen/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
 import ChatScreen from "../screens/ChatScreen/ChatScreen";
 import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
+import JobDetailsScreen from "../screens/JobDetailsScreen/JobDetailsScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -90,10 +91,19 @@ ServicesScreen.navigationOptions = {
   )
 };
 
-export default createBottomTabNavigator({
+const TabNavigator = createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
   ChatScreenStack,
   ServicesScreen
-});
+})
+
+const MainStack = createStackNavigator({
+  TabNavigator: TabNavigator,
+  JobDetailsScreen: JobDetailsScreen
+}, {
+  headerMode: "none"
+})
+
+export default MainStack;

@@ -181,10 +181,10 @@ class LinksScreen extends React.Component {
       const services = await fetchServiceByUser(filteredUsers);
       services.forEach(item => {
         item.forEach(item => {
-          result.push(item.data());
+          result.push({ ...item.data(), serviceId: item.id });
         });
       });
-      
+
       console.log(result);
       this.setState({ contactResults: result });
     }
@@ -196,6 +196,11 @@ class LinksScreen extends React.Component {
   searchByCategory = () => {
     this.setState({ selectedTerm: "SearchedByCategory" });
   };
+
+  navigate(item, screen) {
+    console.log("item =>", item)
+    this.props.navigation.navigate(screen, { item })
+  }
 
   render() {
     const { contactResults, selected2 } = this.state;
@@ -245,8 +250,9 @@ class LinksScreen extends React.Component {
           <View>
             <List>
               {contactResults.map((item, index) => {
+                console.log(item)
                 return (
-                  <ListItem avatar key={index}>
+                  <ListItem avatar key={index} onPress={this.navigate.bind(this, item, "JobDetailsScreen")}>
                     <Left>
                       <Thumbnail source={{ uri: item.thumbnail }} />
                     </Left>

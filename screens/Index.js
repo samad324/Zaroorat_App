@@ -9,6 +9,10 @@ export default class Index extends React.Component {
     isLoadingComplete: false
   };
 
+  static navigationOptions = {
+    header: null
+  };
+  
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (

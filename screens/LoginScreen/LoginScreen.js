@@ -25,6 +25,15 @@ class LoginScreen extends Component {
     this.setState({ isLoading: false });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { user } = nextProps;
+
+    if (user) {
+      this.navigateToHome();
+    }
+    this.setState({ isLoading: false });
+  }
+
   login = async () => {
     const { onLogin, setAllUsers } = this.props;
 
@@ -62,11 +71,11 @@ class LoginScreen extends Component {
           {isLoading ? (
             <ActivityIndicator color={"#fff"} size={"small"} />
           ) : (
-            <View style={{ flexDirection: "row" }}>
-              <Text style={Styles.fbBtnTxt2}> login with</Text>
-              <Text style={Styles.fbBtnTxt}> Facebook</Text>
-            </View>
-          )}
+              <View style={{ flexDirection: "row" }}>
+                <Text style={Styles.fbBtnTxt2}> login with</Text>
+                <Text style={Styles.fbBtnTxt}> Facebook</Text>
+              </View>
+            )}
         </TouchableOpacity>
       </View>
     );
