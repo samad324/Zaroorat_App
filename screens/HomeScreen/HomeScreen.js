@@ -9,20 +9,33 @@ import {
   View
 } from "react-native";
 import { WebBrowser } from "expo";
+import { connect } from "react-redux";
 
 import { MonoText } from "../../components/StyledText";
+import { getCategories } from "../../config/firebase";
+import { setAllCategories } from "../../store/actions/generalAction";
 
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {};
-    console.disableYellowBox = true;
   }
 
   static navigationOptions = {
     header: null
   };
+
+  componentDidMount() {
+    const { setAllCategories } = this.props;
+    getCategories()
+      .then(categories => {
+        setAllCategories(categories);
+      })
+      .catch(e => {
+        alert(e.message);
+      });
+  }
 
   render() {
     return (
@@ -213,3 +226,22 @@ const styles = StyleSheet.create({
     color: "#2e78b7"
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    user: state.authReducer.user,
+    allUsers: state.authReducer.allUsers,
+    allCategories: state.generalReducer.allCategories
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setAllCategories: payload => dispatch(setAllCategories(payload))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeScreen);

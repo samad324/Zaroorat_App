@@ -146,3 +146,18 @@ export const addServiceToFirestore = (
       thumbnail
     });
 };
+
+export const getCategories = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const rawCategories = await firestore.collection("categories").get();
+      const allCategory = [];
+      rawCategories.forEach(category => {
+        allCategory.push(category.data());
+      });
+      resolve(allCategory);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
