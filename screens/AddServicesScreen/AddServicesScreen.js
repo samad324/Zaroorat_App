@@ -77,6 +77,7 @@ class AddServicesScreen extends React.Component {
     });
 
     const promises = uploadImagesToStorage(thumbnail);
+    const location = await this.getLocationAsync();
 
     Promise.all(promises).then(res => {
       addServiceToFirestore(
@@ -86,7 +87,8 @@ class AddServicesScreen extends React.Component {
         number,
         description,
         res[0],
-        Date.now()
+        Date.now(),
+        location
       ).then(() => {
         alert("Added Successfully.....");
         this.setState({
@@ -94,6 +96,31 @@ class AddServicesScreen extends React.Component {
         });
       });
     });
+  };
+
+  getLocationAsync = async () => {
+    const { user } = this.props;
+
+    try {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+      if (status !== "granted") {
+        alert("Ah! we can't access your location!");
+      }
+
+      let location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true
+      });
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      };
+
+     return coords
+
+    } catch (e) {
+      alert("Error while fetching location!");
+    }
   };
 
   render() {

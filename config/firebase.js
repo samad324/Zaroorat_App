@@ -125,7 +125,8 @@ export const addServiceToFirestore = (
   phone,
   description,
   thumbnail,
-  timeStamp
+  timeStamp,
+  location
 ) => {
   return firestore.collection("services").add({
     providerId,
@@ -134,7 +135,8 @@ export const addServiceToFirestore = (
     phone,
     description,
     thumbnail,
-    timeStamp
+    timeStamp,
+    location
   });
 };
 
@@ -160,3 +162,17 @@ export const fetchServices = (key, value) => {
   });
   return promises;
 };
+
+export const fetchServicesForLocations = () => {
+  return new Promise((resolve,reject) => {
+    const services = [];
+    firestore.collection('services').get().then( res => {
+      res.forEach(doc => {
+         services.push(doc.data());
+      })
+      resolve(services)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+} 
