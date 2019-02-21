@@ -5,10 +5,10 @@ export const onLogin = payload => ({
   payload
 });
 
-export const setAllUsers = payload => ({
+export const setAllUsers = payload =>({
   type: SET_ALL_USERS,
   payload
-});
+}) 
 
 export const onLogout = () => ({
   type: LOGOUT_SUCCESS

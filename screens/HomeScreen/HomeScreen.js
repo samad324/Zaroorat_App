@@ -8,13 +8,17 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { WebBrowser } from "expo";
+import { WebBrowser, Permissions, Location } from "expo";
 import { connect } from "react-redux";
+import firebase from "firebase";
+import "firebase/firestore";
 
+import { setAllUsers } from "../../store/actions/authAction";
 import { styles } from "./Styles";
 import { MonoText } from "../../components/StyledText";
-import { getCategories } from "../../config/firebase";
 import { setAllCategories } from "../../store/actions/generalAction";
+
+import { setUserLocation } from "../../config/firebase";
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -28,15 +32,79 @@ class HomeScreen extends React.Component {
   };
 
   componentDidMount() {
-    const { setAllCategories } = this.props;
-    getCategories()
-      .then(categories => {
-        setAllCategories(categories);
-      })
-      .catch(e => {
-        alert(e.message);
-      });
+    this.getLocationAsync();
+    this.fetchAllUsersRealTime();
+    this.getCategories();
   }
+
+  async fetchAllUsersRealTime() {
+    const { setAllUsers } = this.props;
+
+    try {
+      const doc = firebase.firestore().collection("users");
+      doc.onSnapshot(snapshot => {
+        const allUsers = [];
+
+        snapshot.forEach(data => {
+          allUsers.push(data.data());
+        });
+
+        setAllUsers(allUsers);
+      });
+    } catch (e) {
+      alert("Error");
+      console.log("e =>", e);
+    }
+  }
+
+  getCategories = async () => {
+    const { setAllCategories } = this.props;
+
+    try {
+      const doc = firebase.firestore().collection("categories");
+      doc.onSnapshot(snapshot => {
+        const allCategory = [];
+
+        snapshot.forEach(data => {
+          allCategory.push(data.data());
+        });
+
+        setAllCategories(allCategory);
+      });
+    } catch (e) {
+      alert("Error");
+      console.log("e =>", e);
+    }
+  };
+
+  getLocationAsync = async () => {
+    const { user } = this.props;
+
+    try {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+      if (status !== "granted") {
+        alert("Ah! we can't access your location!");
+        this.setState({
+          errorMessage: "Permission to access location was denied"
+        });
+      }
+
+      let location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true
+      });
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      };
+
+      setUserLocation(coords, user.uid);
+
+      this.setState({ location });
+    } catch (e) {
+      console.log("e =>", e);
+    }
+  };
 
   render() {
     return (
@@ -149,7 +217,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setAllCategories: payload => dispatch(setAllCategories(payload))
+    setAllCategories: payload => dispatch(setAllCategories(payload)),
+    setAllUsers: payload => dispatch(setAllUsers(payload))
   };
 };
 
