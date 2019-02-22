@@ -133,7 +133,7 @@ class JobList extends Component {
                                     <ListItem
                                         avatar
                                         key={Math.random().toString()}
-                                        onPress={() => this.props.navigation.navigate("JobDetailsScreen", { item: job, action: title })}
+                                        onPress={() => this.props.navigation.navigate("JobDetailsScreen", { item: job, action: title, from: "JobList" })}
                                         style={GeneralStyles.fullWidth}
                                     >
                                         <Left>

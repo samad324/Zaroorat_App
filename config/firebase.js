@@ -184,3 +184,34 @@ export const sendMessage = async (roomId, message) => {
 export const responseToContract = async (contractId, status) => {
   return firestore.collection("contract").doc(contractId).set({ status }, { merge: true })
 }
+
+export const createRoom = async (currentUid, otherUid) => {
+  try {
+    const doc = await firestore.collection("chat")
+      .where(`users.${currentUid}`, "==", true)
+      .where(`users.${otherUid}`, "==", true)
+      .get()
+
+    if (doc.empty) {
+      const response = await firestore.collection("chat").add({
+        users: {
+          [currentUid]: true,
+          [otherUid]: true
+        }
+      })
+
+      return { roomId: response.id }
+    }
+    
+    let data;
+
+    doc.forEach(d => {
+      data = { roomId: d.id };
+    })
+
+    return data;
+  }
+  catch (e) {
+    throw e
+  }
+}

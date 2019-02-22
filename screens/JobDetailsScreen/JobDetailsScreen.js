@@ -6,7 +6,7 @@ import GeneralStyles from '../GeneralStyles';
 import CustomHeader from '../../components/CustomHeader';
 import Layout from '../../constants/Layout';
 import _ from 'lodash';
-import { sendContract, responseToContract } from '../../config/firebase';
+import { sendContract, responseToContract, createRoom } from '../../config/firebase';
 
 class JobDetailsScreen extends Component {
     constructor() {
@@ -23,8 +23,12 @@ class JobDetailsScreen extends Component {
 
     componentDidMount() {
         const { allUsers } = this.props;
-        const { item, action } = this.props.navigation.state.params;
-        const user = _.find(allUsers, { uid: item.providerId }) || {};
+        const { item, action, from } = this.props.navigation.state.params;
+        let user = _.find(allUsers, { uid: item.providerId }) || {};
+
+        if (from === "JobList") {
+            user = _.find(allUsers, { uid: item.senderId }) || {};
+        }
 
         this.setState({ ...item, user, action }, () => console.log("this.state =>", this.state))
     }
@@ -104,8 +108,26 @@ class JobDetailsScreen extends Component {
         }
     }
 
+    async startConversation(currentUser, otherUser) {
+        const { allUsers } = this.props;
+
+        try {
+            const response = await createRoom(currentUser, otherUser);
+            const otherUserInfo = _.find(allUsers, { uid: otherUser }) || {};
+
+            if (response) {
+                otherUserInfo.roomId = response.roomId;
+                this.props.navigation.navigate("ChatScreen", { otherUser: otherUserInfo });
+            }
+        }
+        catch (e) {
+            alert(e)
+        }
+    }
+
     render() {
         const { phone, description, title, category, thumbnail, user, action } = this.state;
+        const { user: currentUser } = this.props;
 
         return (
             <View style={[GeneralStyles.flex1]}>
@@ -160,9 +182,14 @@ class JobDetailsScreen extends Component {
                         }
                         {
                             action === "active" &&
-                            <TouchableOpacity style={GeneralStyles.buttonContainerFull} onPress={() => this.responseContract("completed")}>
-                                <Text style={GeneralStyles.fontCenter}>End Contract</Text>
-                            </TouchableOpacity>
+                            <View style={GeneralStyles.flexRow}>
+                                <TouchableOpacity style={GeneralStyles.buttonContainerHalf} onPress={() => this.responseContract("completed")}>
+                                    <Text style={GeneralStyles.fontCenter}>End Contract</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={GeneralStyles.buttonContainerHalf} onPress={() => this.startConversation(currentUser.uid, user.uid)}>
+                                    <Text style={GeneralStyles.fontCenter}>Start Conversation</Text>
+                                </TouchableOpacity>
+                            </View>
                         }
                     </View>
                 </ScrollView>
