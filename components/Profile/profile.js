@@ -12,6 +12,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { ImagePicker } from "expo";
 import { connect } from "react-redux";
+import { Item, Input, Icon } from "native-base";
 
 import { onLogout } from "../../store/actions/authAction";
 
@@ -23,7 +24,7 @@ class Profile extends Component {
 
     this.state = {
       thumbnail: "",
-      phNumber: "",
+      phoneNumber: "",
       editNumber: false
     };
   }
@@ -34,52 +35,46 @@ class Profile extends Component {
   }
 
   _pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        base64: true,
-        aspect: [4, 3]
-      });
-
-      if (!result.cancelled) {
-        this.setState(
-          {
-            thumbnail: result.uri
-          },
-          () => console.log("state set =>", this.state.thumbnail)
-        );
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    ImagePicker.launchImageLibraryAsync({
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 0.4
+    })
+      .then(res => {
+        if (!res.cancelled) {
+          this.setState({ thumbnail: res.uri }, () =>
+            console.log("state set =>", this.state.thumbnail)
+          );
+        }
+      })
+      .catch(err => alert("result", err));
   };
 
   saveData = async () => {
-    const { thumbnail, phNumber } = this.state;
-
+    const { thumbnail, phoneNumber } = this.state;
     const { uid } = this.props.user;
 
-    const promises = uploadImagesToStorage(thumbnail);
+    const payload = { uid };
 
-    Promise.all(promises).then(res => {
-      setUser({ photo: res[0], phoneNumber: phNumber, uid })
-        .then(() => {
-          alert("Added Successfully.....");
-          // this.setState({
-          //   loader: false
-          // });
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    });
+    if (thumbnail) {
+      try {
+        const promises = await uploadImagesToStorage(thumbnail);
+        const photo = await Promise.all(promises)[0];
+        payload.photo = photo;
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    if (phoneNumber) payload.phoneNumber = phoneNumber;
+    console.log(payload);
+    // await setUser(payload);
+    // alert("Added Successfully.....");
   };
 
   render() {
-    const { thumbnail, editNumber, phNumber } = this.state;
+    const { thumbnail, editNumber } = this.state;
     const { name, photo } = this.props.user || {};
-
-    console.log(phNumber, "phNumber");
 
     return (
       <ScrollView style={styles.container}>
@@ -107,22 +102,17 @@ class Profile extends Component {
                 </Text>
               </TouchableOpacity>
             ) : (
-              <TextInput
-                keyboardType="numeric"
-                placeholder="Number"
-                style={{
-                  height: 40,
-                  borderColor: "gray",
-                  borderWidth: 1,
-                  width: "50%"
-                }}
-                onChangeText={phNumber => this.setState({ phNumber })}
-                value={this.state.text}
-              />
+              <Item>
+                <Icon active name="ios-phone-portrait" />
+                <Input
+                  placeholder="Enter You Phone Number"
+                  keyboardType="numeric"
+                  value={this.state.phoneNumber}
+                  onChangeText={phoneNumber => this.setState({ phoneNumber })}
+                />
+              </Item>
             )}
             <Text style={styles.name}>{name}</Text>
-            {/* {thumbnail || */}
-            {/* //   (editNumber && ( */}
             <TouchableOpacity
               style={styles.buttonContainer}
               onPress={() => this.saveData()}

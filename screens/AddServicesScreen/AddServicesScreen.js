@@ -52,7 +52,7 @@ class AddServicesScreen extends React.Component {
           );
         }
       })
-      .catch(err => console.log("result", err));
+      .catch(err => alert("result", err));
   };
 
   addService = async () => {
