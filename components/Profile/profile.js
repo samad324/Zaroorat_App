@@ -77,7 +77,7 @@ class Profile extends Component {
 
   render() {
     const { thumbnail, editNumber, phNumber } = this.state;
-    const { name, photo } = this.props.user;
+    const { name, photo } = this.props.user || {};
 
     console.log(phNumber, "phNumber");
 
@@ -131,7 +131,7 @@ class Profile extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.buttonContainer}
-              onPress={() => this.onLogout()}
+              onPress={() => this.props.onLogout()}
             >
               <Text>Logout</Text>
             </TouchableOpacity>
