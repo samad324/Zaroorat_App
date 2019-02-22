@@ -180,3 +180,7 @@ export const fetchServicesForLocations = () => {
 export const sendMessage = async (roomId, message) => {
   return firestore.collection("chat").doc(roomId).collection("messages").add(message)
 }
+
+export const responseToContract = async (contractId, status) => {
+  return firestore.collection("contract").doc(contractId).set({ status }, { merge: true })
+}

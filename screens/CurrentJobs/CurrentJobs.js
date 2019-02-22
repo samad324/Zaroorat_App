@@ -11,13 +11,13 @@ class CurrentJobs extends Component {
             <View style={[GeneralStyles.flex1]}>
                 <CustomHeader title="Jobs" />
                 <View style={[GeneralStyles.flex1, GeneralStyles.perfectlyCentered]}>
-                    <TouchableOpacity style={GeneralStyles.buttonContainerFull}>
+                    <TouchableOpacity style={GeneralStyles.buttonContainerFull} onPress={() => this.props.navigation.navigate("JobListScreen", { title: "pending" })}>
                         <Text>Pending Offers</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={GeneralStyles.buttonContainerFull}>
+                    <TouchableOpacity style={GeneralStyles.buttonContainerFull} onPress={() => this.props.navigation.navigate("JobListScreen", { title: "active" })}>
                         <Text>Current Jobs</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={GeneralStyles.buttonContainerFull}>
+                    <TouchableOpacity style={GeneralStyles.buttonContainerFull} onPress={() => this.props.navigation.navigate("JobListScreen", { title: "completed" })}>
                         <Text>Completed Jobs</Text>
                     </TouchableOpacity>
                 </View>

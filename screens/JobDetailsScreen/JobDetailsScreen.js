@@ -6,7 +6,7 @@ import GeneralStyles from '../GeneralStyles';
 import CustomHeader from '../../components/CustomHeader';
 import Layout from '../../constants/Layout';
 import _ from 'lodash';
-import { sendContract } from '../../config/firebase';
+import { sendContract, responseToContract } from '../../config/firebase';
 
 class JobDetailsScreen extends Component {
     constructor() {
@@ -23,10 +23,10 @@ class JobDetailsScreen extends Component {
 
     componentDidMount() {
         const { allUsers } = this.props;
-        const { item } = this.props.navigation.state.params;
+        const { item, action } = this.props.navigation.state.params;
         const user = _.find(allUsers, { uid: item.providerId }) || {};
 
-        this.setState({ ...item, user }, () => console.log("this.state =>", this.state))
+        this.setState({ ...item, user, action }, () => console.log("this.state =>", this.state))
     }
 
     async makeContract() {
@@ -58,12 +58,54 @@ class JobDetailsScreen extends Component {
             );
         }
         catch (e) {
-            alert("Error making contract")
+            alert(e)
+        }
+    }
+
+    async responseContract(status) {
+        const { serviceId } = this.state;
+
+        try {
+            await responseToContract(serviceId, status);
+
+            if (status === "accepted") {
+                Alert.alert(
+                    'Woah!',
+                    'Congratz! remember to work hard',
+                    [
+                        { text: 'Got it', onPress: () => this.props.navigation.goBack() },
+                    ],
+                    { cancelable: false },
+                );
+            }
+            else if (status === "rejected") {
+                Alert.alert(
+                    'Well!',
+                    'No Worries! you will get more offers',
+                    [
+                        { text: 'Never mine', onPress: () => this.props.navigation.goBack() },
+                    ],
+                    { cancelable: false },
+                );
+            }
+            else if (status === "completed") {
+                Alert.alert(
+                    'Woah!',
+                    'Hope! you had a great work',
+                    [
+                        { text: 'yeah', onPress: () => this.props.navigation.goBack() },
+                    ],
+                    { cancelable: false },
+                );
+            }
+        }
+        catch (e) {
+            alert(e.message)
         }
     }
 
     render() {
-        const { phone, description, title, category, thumbnail, user } = this.state;
+        const { phone, description, title, category, thumbnail, user, action } = this.state;
 
         return (
             <View style={[GeneralStyles.flex1]}>
@@ -99,9 +141,29 @@ class JobDetailsScreen extends Component {
                                 <Text style={GeneralStyles.flex1}>{user.name}</Text>
                             </View>
                         </View>
-                        <TouchableOpacity style={{ width: Layout.window.width * 0.7, padding: 20, backgroundColor: "red", marginTop: 15, marginBottom: 15 }} onPress={() => this.makeContract()}>
-                            <Text style={GeneralStyles.fontCenter}>Hire me</Text>
-                        </TouchableOpacity>
+                        {
+                            !action &&
+                            <TouchableOpacity style={{ width: Layout.window.width * 0.7, padding: 20, backgroundColor: "red", marginTop: 15, marginBottom: 15 }} onPress={() => this.makeContract()}>
+                                <Text style={GeneralStyles.fontCenter}>Hire me</Text>
+                            </TouchableOpacity>
+                        }
+                        {
+                            action === "pending" &&
+                            <View style={GeneralStyles.flexRow}>
+                                <TouchableOpacity style={GeneralStyles.buttonContainerHalf} onPress={() => this.responseContract("accepted")}>
+                                    <Text style={GeneralStyles.fontCenter}>Accept</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={GeneralStyles.buttonContainerHalf} onPress={() => this.responseContract("rejected")}>
+                                    <Text style={GeneralStyles.fontCenter}>Reject</Text>
+                                </TouchableOpacity>
+                            </View>
+                        }
+                        {
+                            action === "active" &&
+                            <TouchableOpacity style={GeneralStyles.buttonContainerFull} onPress={() => this.responseContract("completed")}>
+                                <Text style={GeneralStyles.fontCenter}>End Contract</Text>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </ScrollView>
             </View>

@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
   AsyncStorage
 } from "react-native";
-import { ImagePicker } from "expo";
+import { ImagePicker, Location, Permissions } from "expo";
 import { connect } from "react-redux";
 
 import {
@@ -116,7 +116,7 @@ class AddServicesScreen extends React.Component {
         longitude: location.coords.longitude
       };
 
-     return coords
+      return coords
 
     } catch (e) {
       alert("Error while fetching location!");
@@ -181,8 +181,8 @@ class AddServicesScreen extends React.Component {
             {!loader ? (
               <Text style={Styles.txtAddService}>Add</Text>
             ) : (
-              <ActivityIndicator size="small" color="#0000ff" />
-            )}
+                <ActivityIndicator size="small" color="#0000ff" />
+              )}
           </TouchableOpacity>
         </View>
       </View>

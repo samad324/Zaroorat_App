@@ -13,6 +13,7 @@ const GeneralStyles = {
     secondaryBackground: { backgroundColor: Colors.secondary },
     fontWhite: { color: "white" },
     fontCenter: { textAlign: "center" },
+    fullWidth: { width: width },
     buttonContainer: {
         marginTop: 10,
         height: 45,
@@ -32,6 +33,19 @@ const GeneralStyles = {
         alignItems: "center",
         marginBottom: 20,
         width: width * 0.8,
+        borderRadius: 30,
+        backgroundColor: "#00BFFF"
+    },
+    buttonContainerHalf: {
+        marginTop: 10,
+        height: 45,
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 20,
+        width: width * 0.4,
+        marginLeft: 5,
+        marginRight: 5,
         borderRadius: 30,
         backgroundColor: "#00BFFF"
     }
