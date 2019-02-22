@@ -49,7 +49,8 @@ export const Styles = {
         color: "white"
     },
     avatar: {
-        width: width * 0.1,
-        height: width * 0.1
+        width: width * 0.15,
+        height: width * 0.15,
+        borderRadius: (width * 0.15) / 2
     },
 };

@@ -10,7 +10,8 @@ import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LinksScreen from "../screens/LinksScreen/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
 import ChatScreen from "../screens/ChatScreen/ChatScreen";
-import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen";
+import InboxScreen from "../screens/InboxScreen/InboxScreen";
+import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
 import JobDetailsScreen from "../screens/JobDetailsScreen/JobDetailsScreen";
 import ViewMapScreen from "../screens/MapScreen/MapScreen";
 import CategoryScreen from "../screens/Category/Category";
@@ -61,11 +62,25 @@ SettingsStack.navigationOptions = {
   )
 };
 
-const ChatScreenStack = createStackNavigator({
-  Chat: ChatScreen
+// const ChatScreenStack = createStackNavigator({
+//   Chat: ChatScreen
+// });
+
+// ChatScreenStack.navigationOptions = {
+//   tabBarLabel: "Chat",
+//   tabBarIcon: ({ focused }) => (
+//     <TabBarIcon
+//       focused={focused}
+//       name={Platform.OS === "ios" ? "md-chatboxes" : "md-chatboxes"}
+//       />
+//   )
+// };
+
+const InboxScreenStack = createStackNavigator({
+  Inbox: InboxScreen
 });
 
-ChatScreenStack.navigationOptions = {
+InboxScreenStack.navigationOptions = {
   tabBarLabel: "Chat",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -115,20 +130,18 @@ const TabNavigator = createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
-  ChatScreenStack,
+  InboxScreenStack,
   ServicesScreen,
   MapScreen
 });
 
-const MainStack = createStackNavigator(
-  {
-    TabNavigator: TabNavigator,
-    JobDetailsScreen: JobDetailsScreen,
-    CategoryScreen: CategoryScreen
-  },
-  {
+const MainStack = createStackNavigator({
+  TabNavigator: TabNavigator,
+  JobDetailsScreen: JobDetailsScreen,
+  ChatScreen: ChatScreen,
+  CategoryScreen: CategoryScreen
+}, {
     headerMode: "none"
-  }
-);
+  })
 
 export default MainStack;

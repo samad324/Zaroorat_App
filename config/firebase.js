@@ -164,15 +164,19 @@ export const fetchServices = (key, value) => {
 };
 
 export const fetchServicesForLocations = () => {
-  return new Promise((resolve,reject) => {
+  return new Promise((resolve, reject) => {
     const services = [];
-    firestore.collection('services').get().then( res => {
+    firestore.collection('services').get().then(res => {
       res.forEach(doc => {
-         services.push(doc.data());
+        services.push(doc.data());
       })
       resolve(services)
     }).catch(error => {
       reject(error)
     })
   })
-} 
+}
+
+export const sendMessage = async (roomId, message) => {
+  return firestore.collection("chat").doc(roomId).collection("messages").add(message)
+}
