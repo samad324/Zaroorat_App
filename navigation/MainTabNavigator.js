@@ -61,19 +61,19 @@ SettingsStack.navigationOptions = {
   )
 };
 
-const ChatScreenStack = createStackNavigator({
-  Chat: ChatScreen
-});
+// const ChatScreenStack = createStackNavigator({
+//   Chat: ChatScreen
+// });
 
-ChatScreenStack.navigationOptions = {
-  tabBarLabel: "Chat",
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === "ios" ? "md-chatboxes" : "md-chatboxes"}
-      />
-  )
-};
+// ChatScreenStack.navigationOptions = {
+//   tabBarLabel: "Chat",
+//   tabBarIcon: ({ focused }) => (
+//     <TabBarIcon
+//       focused={focused}
+//       name={Platform.OS === "ios" ? "md-chatboxes" : "md-chatboxes"}
+//       />
+//   )
+// };
 
 const InboxScreenStack = createStackNavigator({
   Inbox: InboxScreen
@@ -85,7 +85,7 @@ InboxScreenStack.navigationOptions = {
     <TabBarIcon
       focused={focused}
       name={Platform.OS === "ios" ? "md-chatboxes" : "md-chatboxes"}
-      />
+    />
   )
 };
 
@@ -136,10 +136,11 @@ const TabNavigator = createBottomTabNavigator({
 
 const MainStack = createStackNavigator({
   TabNavigator: TabNavigator,
-  JobDetailsScreen: JobDetailsScreen
+  JobDetailsScreen: JobDetailsScreen,
+  ChatScreen: ChatScreen
 }, {
-  headerMode: "none"
-})
+    headerMode: "none"
+  })
 
 export default MainStack;
 

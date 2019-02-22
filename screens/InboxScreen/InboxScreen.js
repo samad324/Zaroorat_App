@@ -21,7 +21,22 @@ class InboxScreen extends Component {
     }
 
     componentDidMount() {
-        setTimeout(this.fetchMessageInbox, 1000)
+        const { allUsers } = this.props;
+        this.isDoing = false;
+
+        if (allUsers.length > 1) {
+            this.isDoing = true;
+            this.fetchMessageInbox();
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { allUsers } = nextProps;
+
+        if (allUsers.length > 1 && !this.isDoing) {
+            this.isDoing = true;
+            this.fetchMessageInbox();
+        }
     }
 
     async fetchMessageInbox() {
@@ -42,7 +57,7 @@ class InboxScreen extends Component {
                 const otherUser = _.find(allUsers, { uid: otherUid });
 
                 if (otherUser) {
-                    inboxData.push(otherUser)
+                    inboxData.push({ ...otherUser, roomId: u.roomId })
                 }
             })
 
@@ -61,7 +76,7 @@ class InboxScreen extends Component {
                         :
                         inboxData.map(d => {
                             return (
-                                <TouchableOpacity key={Math.random().toString()} style={[Styles.mainMessageBox]}>
+                                <TouchableOpacity key={Math.random().toString()} style={[Styles.mainMessageBox]} onPress={() => this.props.navigation.navigate("ChatScreen", { otherUser: d })}>
                                     <View style={[Styles.messageBox]}>
                                         <Image source={{ uri: d.photo }} style={Styles.avatar} />
                                         <Text style={[Styles.message]}>{d.name}</Text>
