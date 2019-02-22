@@ -24,7 +24,7 @@ export class componentName extends Component {
 
   render() {
     return (
-      <Profile />
+      <Profile onLogout={this.logout} />
       //   <View >
       //   <TouchableOpacity onPress={this.logout}>
       //     <Text>Logout</Text>
