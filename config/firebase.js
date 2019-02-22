@@ -18,7 +18,6 @@ export const loginWithFacebook = () => {
       }
     );
     if (type === "success") {
-
       const credencials = firebase.auth.FacebookAuthProvider.credential(token);
       // console.log(credencials);
       auth
@@ -90,10 +89,10 @@ export const uploadImagesToStorage = image => {
     new Promise((resolve, reject) => {
       const blob = new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.onload = function () {
+        xhr.onload = function() {
           resolve(xhr.response);
         };
-        xhr.onerror = function (e) {
+        xhr.onerror = function(e) {
           reject(new TypeError("Network request failed"));
         };
         xhr.responseType = "blob";
@@ -105,8 +104,8 @@ export const uploadImagesToStorage = image => {
         let imgRef = storageRef.child("/images/" + Math.random() + ".jpg");
         imgRef
           .put(result)
-          .then(function (snapshot) {
-            imgRef.getDownloadURL().then(function (url) {
+          .then(function(snapshot) {
+            imgRef.getDownloadURL().then(function(url) {
               resolve(url);
             });
           })
@@ -140,9 +139,10 @@ export const addServiceToFirestore = (
   });
 };
 
-export const sendContract = async (payload) => {
-  return firestore.collection("contract").add(payload)
-}
+export const sendContract = async payload => {
+  return firestore.collection("contract").add(payload);
+};
+
 export const fetchServiceByCategory = async category => {
   return new Promise(async (resolve, reject) => {
     const allPromises = await fetchServices("category", [category]);
@@ -166,17 +166,32 @@ export const fetchServices = (key, value) => {
 export const fetchServicesForLocations = () => {
   return new Promise((resolve, reject) => {
     const services = [];
-    firestore.collection('services').get().then(res => {
-      res.forEach(doc => {
-        services.push(doc.data());
+    firestore
+      .collection("services")
+      .get()
+      .then(res => {
+        res.forEach(doc => {
+          services.push(doc.data());
+        });
+        resolve(services);
       })
-      resolve(services)
-    }).catch(error => {
-      reject(error)
-    })
-  })
-}
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
 
 export const sendMessage = async (roomId, message) => {
-  return firestore.collection("chat").doc(roomId).collection("messages").add(message)
-}
+  return firestore
+    .collection("chat")
+    .doc(roomId)
+    .collection("messages")
+    .add(message);
+};
+
+export const responseToContract = async (contractId, status) => {
+  return firestore
+    .collection("contract")
+    .doc(contractId)
+    .set({ status }, { merge: true });
+};

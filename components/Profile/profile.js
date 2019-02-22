@@ -14,6 +14,7 @@ import { ImagePicker } from "expo";
 import { connect } from "react-redux";
 import { Item, Input, Icon } from "native-base";
 
+import { withNavigation } from "react-navigation";
 import { onLogout } from "../../store/actions/authAction";
 
 import { uploadImagesToStorage, setUser } from "../../config/firebase";
@@ -121,6 +122,14 @@ class Profile extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.buttonContainer}
+              onPress={() =>
+                this.props.navigation.navigate("CurrentJobsScreen")
+              }
+            >
+              <Text>Your Jobs</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonContainer}
               onPress={() => this.props.onLogout()}
             >
               <Text>Logout</Text>
@@ -147,7 +156,7 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Profile);
+)(withNavigation(Profile));
 
 const styles = StyleSheet.create({
   header: {

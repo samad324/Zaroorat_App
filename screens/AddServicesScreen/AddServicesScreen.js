@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
   AsyncStorage
 } from "react-native";
-import { ImagePicker } from "expo";
+import { ImagePicker, Location, Permissions } from "expo";
 import { connect } from "react-redux";
 
 import {
