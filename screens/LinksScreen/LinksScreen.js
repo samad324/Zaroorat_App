@@ -14,7 +14,7 @@ import {
 import { Permissions, Contacts, Location } from "expo";
 import { connect } from "react-redux";
 import moment from "moment";
-import { calculateDistance } from '../../config/helpers';
+import { calculateDistance } from "../../config/helpers";
 
 import { Styles } from "../LoginScreen/Styles";
 import {
@@ -48,21 +48,22 @@ class LinksScreen extends React.Component {
     try {
       let { status } = await Permissions.askAsync(Permissions.LOCATION);
 
-      if (status !== 'granted') {
+      if (status !== "granted") {
         alert("Ah! we can't access your location!");
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+      let location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true
+      });
 
       const coords = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude
-      }
+      };
 
       return coords;
-    }
-    catch (e) {
+    } catch (e) {
       console.log("e =>", e);
       throw e;
     }
@@ -188,12 +189,12 @@ class LinksScreen extends React.Component {
         if (u.location && u.uid !== user.uid) {
           const d = calculateDistance(currentLocation, u.location);
 
-          console.log("d =>", d)
+          console.log("d =>", d);
           if (d <= 10) {
             filteredUsers.push(u);
           }
         }
-      })
+      });
 
       console.log("filteredUsers =>", filteredUsers);
       const result = [];
@@ -206,9 +207,8 @@ class LinksScreen extends React.Component {
 
       console.log(result);
       this.setState({ contactResults: result });
-    }
-    catch (e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -217,8 +217,8 @@ class LinksScreen extends React.Component {
   };
 
   navigate(item, screen) {
-    console.log("item =>", item)
-    this.props.navigation.navigate(screen, { item })
+    console.log("item =>", item);
+    this.props.navigation.navigate(screen, { item });
   }
 
   render() {
@@ -276,12 +276,16 @@ class LinksScreen extends React.Component {
         )}
 
         <View>
-          <View>
+          <ScrollView>
             <List>
               {contactResults.map((item, index) => {
-                console.log(item)
+                console.log(item);
                 return (
-                  <ListItem avatar key={index} onPress={this.navigate.bind(this, item, "JobDetailsScreen")}>
+                  <ListItem
+                    avatar
+                    key={index}
+                    onPress={this.navigate.bind(this, item, "JobDetailsScreen")}
+                  >
                     <Left>
                       <Thumbnail source={{ uri: item.thumbnail }} />
                     </Left>
@@ -296,7 +300,7 @@ class LinksScreen extends React.Component {
                 );
               })}
             </List>
-          </View>
+          </ScrollView>
         </View>
       </ScrollView>
     );
