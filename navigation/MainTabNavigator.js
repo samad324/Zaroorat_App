@@ -15,6 +15,7 @@ import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
 import JobDetailsScreen from "../screens/JobDetailsScreen/JobDetailsScreen";
 import ViewMapScreen from "../screens/MapScreen/MapScreen";
 import CategoryScreen from "../screens/Category/Category";
+import CurrentJobsScreen from "../screens/CurrentJobs/CurrentJobs";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -132,14 +133,15 @@ const TabNavigator = createBottomTabNavigator({
   SettingsStack,
   InboxScreenStack,
   ServicesScreen,
-  MapScreen
+  MapScreen,
 });
 
 const MainStack = createStackNavigator({
   TabNavigator: TabNavigator,
   JobDetailsScreen: JobDetailsScreen,
   ChatScreen: ChatScreen,
-  CategoryScreen: CategoryScreen
+  CategoryScreen: CategoryScreen,
+  CurrentJobsScreen: CurrentJobsScreen
 }, {
     headerMode: "none"
   })

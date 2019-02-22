@@ -12,7 +12,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { ImagePicker } from "expo";
 import { connect } from "react-redux";
-
+import { withNavigation } from 'react-navigation';
 import { onLogout } from "../../store/actions/authAction";
 
 import { uploadImagesToStorage, setUser } from "../../config/firebase";
@@ -107,19 +107,19 @@ class Profile extends Component {
                 </Text>
               </TouchableOpacity>
             ) : (
-              <TextInput
-                keyboardType="numeric"
-                placeholder="Number"
-                style={{
-                  height: 40,
-                  borderColor: "gray",
-                  borderWidth: 1,
-                  width: "50%"
-                }}
-                onChangeText={phNumber => this.setState({ phNumber })}
-                value={this.state.text}
-              />
-            )}
+                <TextInput
+                  keyboardType="numeric"
+                  placeholder="Number"
+                  style={{
+                    height: 40,
+                    borderColor: "gray",
+                    borderWidth: 1,
+                    width: "50%"
+                  }}
+                  onChangeText={phNumber => this.setState({ phNumber })}
+                  value={this.state.text}
+                />
+              )}
             <Text style={styles.name}>{name}</Text>
             {/* {thumbnail || */}
             {/* //   (editNumber && ( */}
@@ -128,6 +128,12 @@ class Profile extends Component {
               onPress={() => this.saveData()}
             >
               <Text>Update Data</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => this.props.navigation.navigate("CurrentJobsScreen")}
+            >
+              <Text>Your Jobs</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.buttonContainer}
@@ -157,7 +163,7 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Profile);
+)(withNavigation(Profile));
 
 const styles = StyleSheet.create({
   header: {
