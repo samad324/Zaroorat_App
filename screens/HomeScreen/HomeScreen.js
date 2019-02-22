@@ -106,6 +106,10 @@ class HomeScreen extends React.Component {
     }
   };
 
+  showCategory = category => {
+    this.props.navigation.navigate("CategoryScreen", { category });
+  };
+
   render() {
     const { allCategories } = this.props;
     return (
@@ -125,11 +129,15 @@ class HomeScreen extends React.Component {
                 ]}
                 key={category.name}
               >
-                <Image
-                  source={{ uri: category.thumbnail }}
-                  style={styles.tileImg}
-                />
-                <Text styles={styles.tileTxt}>{category.name}</Text>
+                <TouchableOpacity
+                  onPress={() => this.showCategory(category.name)}
+                >
+                  <Image
+                    source={{ uri: category.thumbnail }}
+                    style={styles.tileImg}
+                  />
+                  <Text styles={styles.tileText}>{category.name}</Text>
+                </TouchableOpacity>
               </View>
             );
           })}

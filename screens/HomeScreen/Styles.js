@@ -26,8 +26,9 @@ export const styles = StyleSheet.create({
     width: width * 0.24,
     height: height * 0.1
   },
-  tileTxt: {
-    textAlign: "center"
+  tileText: {
+    alignSelf: "center",
+    fontSize: width * 0.1
   },
   extraSize: {
     width: width * 0.49

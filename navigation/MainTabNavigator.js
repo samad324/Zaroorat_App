@@ -14,6 +14,7 @@ import InboxScreen from "../screens/InboxScreen/InboxScreen";
 import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
 import JobDetailsScreen from "../screens/JobDetailsScreen/JobDetailsScreen";
 import ViewMapScreen from "../screens/MapScreen/MapScreen";
+import CategoryScreen from "../screens/Category/Category";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -132,15 +133,15 @@ const TabNavigator = createBottomTabNavigator({
   InboxScreenStack,
   ServicesScreen,
   MapScreen
-})
+});
 
 const MainStack = createStackNavigator({
   TabNavigator: TabNavigator,
   JobDetailsScreen: JobDetailsScreen,
-  ChatScreen: ChatScreen
+  ChatScreen: ChatScreen,
+  CategoryScreen: CategoryScreen
 }, {
     headerMode: "none"
   })
 
 export default MainStack;
-
