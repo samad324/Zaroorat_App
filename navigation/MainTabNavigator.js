@@ -11,7 +11,7 @@ import LinksScreen from "../screens/LinksScreen/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
 import ChatScreen from "../screens/ChatScreen/ChatScreen";
 import InboxScreen from "../screens/InboxScreen/InboxScreen";
-import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
+import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen";
 import JobDetailsScreen from "../screens/JobDetailsScreen/JobDetailsScreen";
 import ViewMapScreen from "../screens/MapScreen/MapScreen";
 import CategoryScreen from "../screens/Category/Category";
@@ -27,23 +27,23 @@ HomeStack.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === "ios"
-          ? `ios-information-circle${focused ? "" : "-outline"}`
-          : "md-information-circle"
+          ? `ios-home${focused ? "" : "-outline"}`
+          : "md-home"
       }
     />
   )
 };
 
 const LinksStack = createStackNavigator({
-  Links: LinksScreen
+  Search: LinksScreen
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: "Links",
+  tabBarLabel: "Search",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === "ios" ? "ios-link" : "md-link"}
+      name={Platform.OS === "ios" ? "ios-search" : "md-search"}
     />
   )
 };
@@ -101,8 +101,8 @@ ServicesScreen.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === "ios"
-          ? `ios-information-circle${focused ? "" : "-outline"}`
-          : "md-information-circle"
+          ? `ios-add-circle${focused ? "" : "-outline"}`
+          : "md-add-circle"
       }
     />
   )
@@ -118,9 +118,7 @@ MapScreen.navigationOptions = {
     <TabBarIcon
       focused={focused}
       name={
-        Platform.OS === "ios"
-          ? `ios-information-circle${focused ? "" : "-outline"}`
-          : "md-information-circle"
+        Platform.OS === "ios" ? `ios-map${focused ? "" : "-outline"}` : "md-map"
       }
     />
   )
@@ -128,20 +126,23 @@ MapScreen.navigationOptions = {
 
 const TabNavigator = createBottomTabNavigator({
   HomeStack,
+  MapScreen,
   LinksStack,
-  SettingsStack,
-  InboxScreenStack,
   ServicesScreen,
-  MapScreen
+  InboxScreenStack,
+  SettingsStack
 });
 
-const MainStack = createStackNavigator({
-  TabNavigator: TabNavigator,
-  JobDetailsScreen: JobDetailsScreen,
-  ChatScreen: ChatScreen,
-  CategoryScreen: CategoryScreen
-}, {
+const MainStack = createStackNavigator(
+  {
+    TabNavigator: TabNavigator,
+    JobDetailsScreen: JobDetailsScreen,
+    ChatScreen: ChatScreen,
+    CategoryScreen: CategoryScreen
+  },
+  {
     headerMode: "none"
-  })
+  }
+);
 
 export default MainStack;

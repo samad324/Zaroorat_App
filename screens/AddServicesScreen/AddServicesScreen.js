@@ -40,25 +40,19 @@ class AddServicesScreen extends React.Component {
   }
 
   _pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        base64: true,
-        aspect: [4, 3]
-      });
-      console.log("result", result);
-
-      if (!result.cancelled) {
-        this.setState(
-          {
-            thumbnail: result.uri
-          },
-          () => console.log("state set =>", this.state.thumbnail)
-        );
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    ImagePicker.launchImageLibraryAsync({
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 0.6
+    })
+      .then(res => {
+        if (!res.cancelled) {
+          this.setState({ thumbnail: res.uri }, () =>
+            console.log("state set =>", this.state.thumbnail)
+          );
+        }
+      })
+      .catch(err => console.log("result", err));
   };
 
   addService = async () => {
@@ -116,8 +110,7 @@ class AddServicesScreen extends React.Component {
         longitude: location.coords.longitude
       };
 
-     return coords
-
+      return coords;
     } catch (e) {
       alert("Error while fetching location!");
     }
@@ -125,6 +118,7 @@ class AddServicesScreen extends React.Component {
 
   render() {
     const { category, loader } = this.state;
+    const { allCategories } = this.props;
 
     return (
       <View style={Styles.container}>
@@ -145,11 +139,14 @@ class AddServicesScreen extends React.Component {
               this.setState({ category: itemValue })
             }
           >
-            <Picker.Item label="Select Category" value="select category" />
-            <Picker.Item label="Education" value="education" />
-            <Picker.Item label="Web Development" value="webdevelopment" />
-            <Picker.Item label="Repairing" value="machenic" />
-            <Picker.Item label="Electrition" value="electrition" />
+            <Picker.Item label={"Select a Categoty"} value="" />
+            {allCategories.map(item => (
+              <Picker.Item
+                label={item.name}
+                value={item.name}
+                key={Math.random().toString()}
+              />
+            ))}
           </Picker>
 
           <TextInput
@@ -192,7 +189,8 @@ class AddServicesScreen extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.authReducer.user
+    user: state.authReducer.user,
+    allCategories: state.generalReducer.allCategories
   };
 };
 
