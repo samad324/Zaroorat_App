@@ -10,6 +10,7 @@ import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import LinksScreen from "../screens/LinksScreen/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
 import ChatScreen from "../screens/ChatScreen/ChatScreen";
+import InboxScreen from "../screens/InboxScreen/InboxScreen";
 import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
 import JobDetailsScreen from "../screens/JobDetailsScreen/JobDetailsScreen";
 import ViewMapScreen from "../screens/MapScreen/MapScreen";
@@ -74,6 +75,20 @@ ChatScreenStack.navigationOptions = {
   )
 };
 
+const InboxScreenStack = createStackNavigator({
+  Inbox: InboxScreen
+});
+
+InboxScreenStack.navigationOptions = {
+  tabBarLabel: "Chat",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === "ios" ? "md-chatboxes" : "md-chatboxes"}
+      />
+  )
+};
+
 const ServicesScreen = createStackNavigator({
   ServicesScreen: AddServicesScreen
 });
@@ -114,7 +129,7 @@ const TabNavigator = createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
-  ChatScreenStack,
+  InboxScreenStack,
   ServicesScreen,
   MapScreen
 })
