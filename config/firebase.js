@@ -18,12 +18,13 @@ export const loginWithFacebook = () => {
       }
     );
     if (type === "success") {
+
       const credencials = firebase.auth.FacebookAuthProvider.credential(token);
-      console.log(credencials);
+      // console.log(credencials);
       auth
         .signInAndRetrieveDataWithCredential(credencials)
         .then(res => {
-          console.log(res);
+          // console.log(res, "?????");
           // AsyncStorage.setItem('providerId',res.user.uid);
           const userData = {
             name: res.user.displayName,
@@ -89,10 +90,10 @@ export const uploadImagesToStorage = image => {
     new Promise((resolve, reject) => {
       const blob = new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.onload = function() {
+        xhr.onload = function () {
           resolve(xhr.response);
         };
-        xhr.onerror = function(e) {
+        xhr.onerror = function (e) {
           reject(new TypeError("Network request failed"));
         };
         xhr.responseType = "blob";
@@ -104,8 +105,8 @@ export const uploadImagesToStorage = image => {
         let imgRef = storageRef.child("/images/" + Math.random() + ".jpg");
         imgRef
           .put(result)
-          .then(function(snapshot) {
-            imgRef.getDownloadURL().then(function(url) {
+          .then(function (snapshot) {
+            imgRef.getDownloadURL().then(function (url) {
               resolve(url);
             });
           })
@@ -124,7 +125,8 @@ export const addServiceToFirestore = (
   phone,
   description,
   thumbnail,
-  timeStamp
+  timeStamp,
+  location
 ) => {
   return firestore.collection("services").add({
     providerId,
@@ -133,10 +135,14 @@ export const addServiceToFirestore = (
     phone,
     description,
     thumbnail,
-    timeStamp
+    timeStamp,
+    location
   });
 };
 
+export const sendContract = async (payload) => {
+  return firestore.collection("contract").add(payload)
+}
 export const fetchServiceByCategory = async category => {
   return new Promise(async (resolve, reject) => {
     const allPromises = await fetchServices("category", [category]);
@@ -156,3 +162,17 @@ export const fetchServices = (key, value) => {
   });
   return promises;
 };
+
+export const fetchServicesForLocations = () => {
+  return new Promise((resolve,reject) => {
+    const services = [];
+    firestore.collection('services').get().then( res => {
+      res.forEach(doc => {
+         services.push(doc.data());
+      })
+      resolve(services)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+} 

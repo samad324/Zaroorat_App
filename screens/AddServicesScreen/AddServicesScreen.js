@@ -47,17 +47,18 @@ class AddServicesScreen extends React.Component {
         aspect: [4, 3]
       });
       console.log("result", result);
-      
+
       if (!result.cancelled) {
-        this.setState({
-          thumbnail: result.uri
-        }, () => console.log("state set =>", this.state.thumbnail));
+        this.setState(
+          {
+            thumbnail: result.uri
+          },
+          () => console.log("state set =>", this.state.thumbnail)
+        );
       }
     } catch (e) {
       console.log(e);
     }
-
-
   };
 
   addService = async () => {
@@ -65,17 +66,18 @@ class AddServicesScreen extends React.Component {
 
     const { title, category, description, number, thumbnail } = this.state;
 
-    console.log("title", title)
-    console.log("category", category)
-    console.log("description", description)
-    console.log("number", number)
-    console.log("thumbnail", thumbnail)
+    console.log("title", title);
+    console.log("category", category);
+    console.log("description", description);
+    console.log("number", number);
+    console.log("thumbnail", thumbnail);
 
     this.setState({
       loader: true
     });
 
     const promises = uploadImagesToStorage(thumbnail);
+    const location = await this.getLocationAsync();
 
     Promise.all(promises).then(res => {
       addServiceToFirestore(
@@ -85,7 +87,8 @@ class AddServicesScreen extends React.Component {
         number,
         description,
         res[0],
-        Date.now()
+        Date.now(),
+        location
       ).then(() => {
         alert("Added Successfully.....");
         this.setState({
@@ -93,6 +96,31 @@ class AddServicesScreen extends React.Component {
         });
       });
     });
+  };
+
+  getLocationAsync = async () => {
+    const { user } = this.props;
+
+    try {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+      if (status !== "granted") {
+        alert("Ah! we can't access your location!");
+      }
+
+      let location = await Location.getCurrentPositionAsync({
+        enableHighAccuracy: true
+      });
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      };
+
+     return coords
+
+    } catch (e) {
+      alert("Error while fetching location!");
+    }
   };
 
   render() {
@@ -153,8 +181,8 @@ class AddServicesScreen extends React.Component {
             {!loader ? (
               <Text style={Styles.txtAddService}>Add</Text>
             ) : (
-                <ActivityIndicator size="small" color="#0000ff" />
-              )}
+              <ActivityIndicator size="small" color="#0000ff" />
+            )}
           </TouchableOpacity>
         </View>
       </View>

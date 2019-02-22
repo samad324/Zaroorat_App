@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 import { onLogout } from "../../store/actions/authAction";
 
+import Profile from "../../components/Profile/profile";
+
 export class componentName extends Component {
   constructor(props) {
     super(props);
@@ -22,11 +24,12 @@ export class componentName extends Component {
 
   render() {
     return (
-      <View style={Styles.container}>
-        <TouchableOpacity onPress={this.logout}>
-          <Text>Logout</Text>
-        </TouchableOpacity>
-      </View>
+      <Profile />
+      //   <View >
+      //   <TouchableOpacity onPress={this.logout}>
+      //     <Text>Logout</Text>
+      //   </TouchableOpacity>
+      // </View>
     );
   }
 }

@@ -4,7 +4,7 @@ import AuthScreen from "../screens/Login/Login";
 
 const Routers = createStackNavigator({
   AuthScreen: { screen: AuthScreen },
-  HomeScreen: { screen: HomeScreen }
+  HomeScreen: { screen: HomeScreen },
 });
 
 export default Routers;

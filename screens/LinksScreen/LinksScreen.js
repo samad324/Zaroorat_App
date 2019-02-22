@@ -14,6 +14,7 @@ import {
 import { Permissions, Contacts, Location } from "expo";
 import { connect } from "react-redux";
 import moment from "moment";
+import { calculateDistance } from '../../config/helpers';
 
 import { Styles } from "../LoginScreen/Styles";
 import {
@@ -42,6 +43,30 @@ class LinksScreen extends React.Component {
   componentDidMount() {
     this.requestForPermissions();
   }
+
+  getLocationAsync = async () => {
+    try {
+      let { status } = await Permissions.askAsync(Permissions.LOCATION);
+
+      if (status !== 'granted') {
+        alert("Ah! we can't access your location!");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      }
+
+      return coords;
+    }
+    catch (e) {
+      console.log("e =>", e);
+      throw e;
+    }
+  };
 
   onValueChange2(key, value) {
     this.setState({ [key]: value, contactResults: [] }, () =>
@@ -150,13 +175,51 @@ class LinksScreen extends React.Component {
     this.fetchAllContact();
   };
 
-  searchByLocation = () => {
-    this.setState({ selectedTerm: "searchByLocation" });
+  searchByLocation = async () => {
+    const { allUsers, user } = this.props;
+    try {
+      const currentLocation = await this.getLocationAsync();
+      console.log("currentLocation =>", currentLocation);
+
+      let filteredUsers = [];
+
+      allUsers.forEach(u => {
+        console.log("u =>", u);
+        if (u.location && u.uid !== user.uid) {
+          const d = calculateDistance(currentLocation, u.location);
+
+          console.log("d =>", d)
+          if (d <= 10) {
+            filteredUsers.push(u);
+          }
+        }
+      })
+
+      console.log("filteredUsers =>", filteredUsers);
+      const result = [];
+      const services = await fetchServiceByUser(filteredUsers);
+      services.forEach(item => {
+        item.forEach(item => {
+          result.push({ ...item.data(), serviceId: item.id });
+        });
+      });
+
+      console.log(result);
+      this.setState({ contactResults: result });
+    }
+    catch (e) {
+      console.log(e)
+    }
   };
 
   searchByCategory = () => {
     this.setState({ selectedTerm: "SearchedByCategory" });
   };
+
+  navigate(item, screen) {
+    console.log("item =>", item)
+    this.props.navigation.navigate(screen, { item })
+  }
 
   render() {
     const { contactResults, selected2 } = this.state;
@@ -216,8 +279,9 @@ class LinksScreen extends React.Component {
           <View>
             <List>
               {contactResults.map((item, index) => {
+                console.log(item)
                 return (
-                  <ListItem avatar key={index}>
+                  <ListItem avatar key={index} onPress={this.navigate.bind(this, item, "JobDetailsScreen")}>
                     <Left>
                       <Thumbnail source={{ uri: item.thumbnail }} />
                     </Left>

@@ -11,6 +11,8 @@ import LinksScreen from "../screens/LinksScreen/LinksScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
 import ChatScreen from "../screens/ChatScreen/ChatScreen";
 import AddServicesScreen from "../screens/AddServicesScreen/AddServicesScreen"
+import JobDetailsScreen from "../screens/JobDetailsScreen/JobDetailsScreen";
+import ViewMapScreen from "../screens/MapScreen/MapScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen
@@ -90,10 +92,39 @@ ServicesScreen.navigationOptions = {
   )
 };
 
-export default createBottomTabNavigator({
+const MapScreen = createStackNavigator({
+  Map: ViewMapScreen
+});
+
+MapScreen.navigationOptions = {
+  tabBarLabel: "Map",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === "ios"
+          ? `ios-information-circle${focused ? "" : "-outline"}`
+          : "md-information-circle"
+      }
+    />
+  )
+};
+
+const TabNavigator = createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
   ChatScreenStack,
-  ServicesScreen
-});
+  ServicesScreen,
+  MapScreen
+})
+
+const MainStack = createStackNavigator({
+  TabNavigator: TabNavigator,
+  JobDetailsScreen: JobDetailsScreen
+}, {
+  headerMode: "none"
+})
+
+export default MainStack;
+
