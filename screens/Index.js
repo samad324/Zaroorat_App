@@ -2,7 +2,7 @@ import React from "react";
 import { Platform, StatusBar, StyleSheet, View } from "react-native";
 import { AppLoading, Asset, Font, Icon } from "expo";
 
-import AppNavigator from "../navigation/AppNavigator";
+import AppNavigator from "../navigation/RootNavigation";
 
 export default class Index extends React.Component {
   state = {
@@ -12,7 +12,7 @@ export default class Index extends React.Component {
   static navigationOptions = {
     header: null
   };
-  
+
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (

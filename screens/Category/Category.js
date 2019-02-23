@@ -28,6 +28,10 @@ class Category extends Component {
     };
   }
 
+  static navigationOptions = ({ navigation }) => ({
+    title: navigation.state.params.category
+  });
+
   componentDidMount = async () => {
     const { category } = this.props.navigation.state.params;
     try {
@@ -54,7 +58,7 @@ class Category extends Component {
     const { category, result } = this.state;
     return (
       <View style={Styles.container}>
-        <Header title={category} />
+        {/* <Header title={category} /> */}
         <ScrollView>
           <List>
             {result.map((item, index) => {

@@ -219,6 +219,7 @@ class LinksScreen extends React.Component {
   navigate(item, screen) {
     console.log("item =>", item);
     this.props.navigation.navigate(screen, { item });
+    // this.props.navigation.navigate({ routeName: screen }, { item });
   }
 
   render() {
@@ -279,7 +280,6 @@ class LinksScreen extends React.Component {
           <ScrollView>
             <List>
               {contactResults.map((item, index) => {
-                console.log(item);
                 return (
                   <ListItem
                     avatar

@@ -18,6 +18,12 @@ import { setAllUsers } from "../../store/actions/authAction";
 import { styles } from "./Styles";
 import { setAllCategories } from "../../store/actions/generalAction";
 
+const chartIcon = require("../../assets/images/pages/chart.png");
+const calendarIcon = require("../../assets/images/pages/calendar.png");
+const chatIcon = require("../../assets/images/pages/chat.png");
+const galleryIcon = require("../../assets/images/pages/gallery.png");
+const profileIcon = require("../../assets/images/pages/profile.png");
+
 import { setUserLocation } from "../../config/firebase";
 
 class HomeScreen extends React.Component {
@@ -133,14 +139,98 @@ class HomeScreen extends React.Component {
                   onPress={() => this.showCategory(category.name)}
                 >
                   <Image
+                    resizeMode={"contain"}
                     source={{ uri: category.thumbnail }}
                     style={styles.tileImg}
                   />
-                  <Text styles={styles.tileText}>{category.name}</Text>
+                  <Text style={styles.text}>{category.name}</Text>
                 </TouchableOpacity>
               </View>
             );
           })}
+          {/* <ScrollView contentContainerStyle={styles.row}>
+          {allCategories.map((item, key) => (
+            // <View key={key}>
+            //   <TouchableOpacity style={styles.item}>
+            //     <Image
+            //       resizeMode="contain"
+            //       source={{ uri: item.thumbnail }}
+            //       style={styles.itemImage}
+            //     />
+            //     <Text style={styles.itemText}>{"Charts"}</Text>
+            //   </TouchableOpacity>
+            // </View>
+            <View>
+              <TouchableOpacity style={styles.item}>
+                <Image
+                  resizeMode="contain"
+                  source={galleryIcon}
+                  style={styles.itemImage}
+                />
+                <Text style={styles.itemText}>Gallery</Text>
+              </TouchableOpacity>
+            </View>
+          ))} */}
+          {/* <View>
+            <TouchableOpacity style={styles.item}>
+              <Image
+                resizeMode="contain"
+                source={chartIcon}
+                style={styles.itemImage}
+              />
+              <Text style={styles.itemText}>Charts</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.item}>
+              <Image
+                resizeMode="contain"
+                source={galleryIcon}
+                style={styles.itemImage}
+              />
+              <Text style={styles.itemText}>Gallery</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.item}>
+              <Image
+                resizeMode="contain"
+                source={profileIcon}
+                style={styles.itemImage}
+              />
+              <Text style={styles.itemText}>Profile</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.item}>
+              <Image
+                resizeMode="contain"
+                source={chatIcon}
+                style={styles.itemImage}
+              />
+              <Text style={styles.itemText}>Chats</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.item}>
+              <Image
+                resizeMode="contain"
+                source={calendarIcon}
+                style={styles.itemImage}
+              />
+              <Text style={styles.itemText}>Calendar</Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity style={styles.item}>
+              <Image
+                resizeMode="contain"
+                source={profileIcon}
+                style={styles.itemImage}
+              />
+              <Text style={styles.itemText}>Login</Text>
+            </TouchableOpacity>
+          </View> */}
         </ScrollView>
       </View>
     );
