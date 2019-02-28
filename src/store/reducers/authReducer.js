@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGOUT_SUCCESS } from "../constants";
+import { LOGIN_SUCCESS, LOGOUT_SUCCESS, UPDATE_USER } from "../constants";
 const initialState = {
   user: null
 };
@@ -9,6 +9,11 @@ export const authReducer = (state = initialState, action) => {
       return {
         ...state,
         user: action.payload
+      };
+    case UPDATE_USER:
+      return {
+        ...state,
+        user: { ...state.user, ...action.payload }
       };
     case LOGOUT_SUCCESS:
       return {

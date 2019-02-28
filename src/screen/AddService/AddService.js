@@ -151,7 +151,7 @@ export class Login extends Component {
       image
     };
 
-    navigation.navigate("Maps");
+    navigation.navigate("Maps", { type: "dragable", payload });
     console.log(payload);
   };
 
@@ -223,7 +223,7 @@ export class Login extends Component {
                 style={Styles.signupBtn}
                 onPress={this.saveService}
               >
-                <Text style={Styles.btnText}>Add Service</Text>
+                <Text style={Styles.btnText}>Next</Text>
               </Button>
             </View>
           </View>

@@ -84,18 +84,18 @@ export class componentName extends Component {
           onPress={() => this.setState({ fabActive: !fabActive })}
         >
           <Icon name="ios-arrow-up" />
-          <Button
+          <TouchableOpacity
             style={{ backgroundColor: Colors.blue }}
             onPress={() => this.navigate("AddService", {})}
           >
             <Icon name="ios-add" />
-          </Button>
-          <Button
+          </TouchableOpacity>
+          <TouchableOpacity
             style={{ backgroundColor: Colors.blue }}
             onPress={() => this.navigate("Maps", { type: "nearby" })}
           >
             <Icon name="map" />
-          </Button>
+          </TouchableOpacity>
         </Fab>
       </ScrollView>
     );

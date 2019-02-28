@@ -1,8 +1,10 @@
 import { Location, Permissions } from "expo";
-const haversine = require("haversine");
+import geolib from "geolib";
 
-export const calculateDistance = (start, end) => {
-  return haversine(start, end);
+const checkDistance = async (start, end) => {
+  const inCircule = await geolib.isPointInCircle(start, end, 1000);
+  console.log(inCircule);
+  return inCircule;
 };
 
 export const getLocationAsync = async () => {
@@ -30,14 +32,16 @@ export const getLocationAsync = async () => {
   }
 };
 
-export const measureDistance = (services, currentLocation) => {
+export const measureDistance = async (services, currentLocation) => {
   const arr = [];
   for (let i = 0; i < services.length; i++) {
-    const distance = calculateDistance(currentLocation, services[i].location);
+    const distance = await checkDistance(currentLocation, services[i].location);
     console.log("distance =>", distance);
 
-    if (distance <= 10) {
+    if (distance) {
       arr.push({ ...services[i].location, title: services[i].title });
     }
   }
+
+  return arr;
 };

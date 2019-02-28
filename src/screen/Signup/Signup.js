@@ -1,12 +1,20 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator
+} from "react-native";
 import { connect } from "react-redux";
 import { ImagePicker, Permissions } from "expo";
 import { Item, Input, Button } from "native-base";
 
 import { Styles } from "./Styles";
+import { uploadImages, updateDB } from "../../config/firebase";
+import { updateUser } from "../../store/actions/authAction";
 
-export class Login extends Component {
+export class SignUp extends Component {
   constructor(props) {
     super(props);
 
@@ -15,22 +23,22 @@ export class Login extends Component {
       firstName: "",
       lastName: "",
       email: "",
-      passoword: "",
-      permission: false
+      number: "",
+      permission: false,
+      user: {},
+      isLoading: false
     };
   }
 
-  static navigationOptions = {
-    title: "Sign Up",
-    headerTintColor: "#fff",
-    headerTitleStyle: Styles.headerStyle,
-    headerStyle: {
-      backgroundColor: "#2abf88"
-    }
-  };
-
   componentDidMount = async () => {
-    this.askPermission();
+    const { user } = this.props;
+    await this.askPermission();
+    this.setState({
+      user,
+      email: user.email,
+      image: user.photo,
+      number: user.number || ""
+    });
   };
 
   askPermission = async () => {
@@ -61,8 +69,36 @@ export class Login extends Component {
       this.setState({ image: result.uri });
     }
   };
+
+  signUp = async () => {
+    const { user, updateUser, navigation } = this.props;
+    const { image, email, number } = this.state;
+
+    this.setState({ isLoading: true });
+
+    const data = {
+      email,
+      number
+    };
+    try {
+      if (image !== user.photo) {
+        const url = await uploadImages(image);
+        data.image = url;
+      }
+      console.log(data);
+      await updateDB("users", user.uid, data);
+      data.isNew = false;
+      await updateUser(data);
+      this.setState({ isLoading: false });
+      navigation.navigate("WithDrawer");
+    } catch (error) {
+      alert(error.message);
+      console.log(error);
+    }
+  };
+
   render() {
-    const { firstName, lastName, email, passoword } = this.state;
+    const { email, number, image, isLoading } = this.state;
     return (
       <View style={Styles.container}>
         <View style={Styles.imagePickerContainer}>
@@ -71,60 +107,43 @@ export class Login extends Component {
             onPress={this._pickImage}
           >
             <Image
-              source={require("../../../assets/images/camera.png")}
-              style={Styles.pickerImage}
+              source={
+                (image && { uri: image }) ||
+                require("../../../assets/images/camera.png")
+              }
+              style={(image && Styles.userImage) || Styles.pickerImage}
             />
           </TouchableOpacity>
         </View>
         <View style={Styles.fieldsContainer}>
-          <View style={Styles.joinedFields}>
-            <Item regular style={{ flex: 1, borderRadius: 4 }}>
-              <Input
-                placeholder="First Name"
-                placeholderTextColor="#99999c"
-                style={{ flex: 1 }}
-                value={firstName}
-                onChange={event =>
-                  this.setState({ firstName: event.target.value })
-                }
-              />
-              <Text style={Styles.inputSeperator} />
-              <Input
-                placeholder="Last Name"
-                placeholderTextColor="#99999c"
-                style={{ flex: 0.8 }}
-                value={lastName}
-                onChange={event =>
-                  this.setState({ lastName: event.target.value })
-                }
-              />
-            </Item>
-          </View>
           <View style={Styles.inputFieldsWrapper}>
             <Item regular style={{ borderRadius: 4 }}>
               <Input
                 placeholder="Email"
                 placeholderTextColor="#99999c"
                 value={email}
-                onChange={event => this.setState({ email: event.target.value })}
+                onChangeText={event => this.setState({ email: event })}
               />
             </Item>
           </View>
           <View style={Styles.inputFieldsWrapper}>
             <Item regular style={{ borderRadius: 4 }}>
               <Input
-                placeholder="Passoword"
+                placeholder="Phone number"
                 placeholderTextColor="#99999c"
-                value={passoword}
-                onChange={event =>
-                  this.setState({ passoword: event.target.value })
-                }
+                value={number}
+                keyboardType="numeric"
+                onChangeText={event => this.setState({ number: event })}
               />
             </Item>
           </View>
           <View styles={Styles.signupBtnContainer}>
-            <Button rounded style={Styles.signupBtn}>
-              <Text style={Styles.btnText}>SIGN UP</Text>
+            <Button rounded style={Styles.signupBtn} onPress={this.signUp}>
+              {isLoading ? (
+                <ActivityIndicator color="#fff" size="small" />
+              ) : (
+                <Text style={Styles.btnText}>SIGN UP</Text>
+              )}
             </Button>
           </View>
         </View>
@@ -133,11 +152,15 @@ export class Login extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  user: state.authReducer.user
+});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = dispatch => ({
+  updateUser: payload => dispatch(updateUser(payload))
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login);
+)(SignUp);

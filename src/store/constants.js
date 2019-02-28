@@ -1,3 +1,4 @@
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const SET_ALL_CATEGORIES = "SET_ALL_CATEGORIES";
+export const UPDATE_USER = "UPDATE_USER";

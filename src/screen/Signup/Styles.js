@@ -1,5 +1,7 @@
 import { Dimensions } from "react-native";
 
+import { Colors } from "../../constants/index";
+
 const { width, height } = Dimensions.get("window");
 
 export const Styles = {
@@ -17,18 +19,26 @@ export const Styles = {
     flex: 2
   },
   imagePicker: {
-    backgroundColor: "#2abf88",
+    backgroundColor: Colors.blue,
     width: 160,
     height: 160,
     borderWidth: 4,
-    borderColor: "#2abf88",
+    borderColor: Colors.blue,
     borderRadius: 1000,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    marginTop: height * 0.04
   },
   pickerImage: {
     width: 100,
     height: 100
+  },
+  userImage: {
+    width: 160,
+    height: 160,
+    borderColor: Colors.blue,
+    borderWidth: 0.1,
+    borderRadius: 10000
   },
   joinedFields: {
     width: width,
@@ -57,7 +67,7 @@ export const Styles = {
     alignItems: "center",
     justifyContent: "center",
     marginTop: 30,
-    backgroundColor: "#2abf88",
+    backgroundColor: Colors.blue,
     marginHorizontal: 42,
     height: 56
   },

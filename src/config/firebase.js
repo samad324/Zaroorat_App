@@ -44,8 +44,10 @@ export const getUser = async userData => {
 
   if (!user.exists) {
     await setUser(userData);
+    userData.isNew = true;
     return userData;
   }
+  userData.isNew = false;
   return user.data();
 };
 
@@ -91,7 +93,7 @@ export const addToDB = async (collection, data) => {
   return responce;
 };
 
-export const updateDB = async (collection, id, data, merge = false) => {
+export const updateDB = async (collection, id, data, merge = true) => {
   const responce = await firestore
     .collection(collection)
     .doc(id)
@@ -104,4 +106,34 @@ export const getServices = async () => {
   const services = [];
   rawData.forEach(doc => services.push(doc.data()));
   return services;
+};
+
+export const uploadImages = image => {
+  return new Promise((resolve, reject) => {
+    const blob = new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function() {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function(e) {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", image, true);
+      xhr.send(null);
+    });
+
+    const storageRef = storage.ref();
+    blob.then(result => {
+      let imgRef = storageRef.child("/images/" + Math.random() + ".jpg");
+      imgRef
+        .put(result)
+        .then(function(snapshot) {
+          imgRef.getDownloadURL().then(function(url) {
+            resolve(url);
+          });
+        })
+        .catch(err => reject(err));
+    });
+  });
 };

@@ -25,8 +25,10 @@ export class Login extends Component {
   componentDidMount() {
     const { user } = this.props;
     const { navigate } = this.props.navigation;
-
-    if (user) {
+    console.log(user);
+    if (user && user.isNew) {
+      return navigate("SignUp");
+    } else if (user && !user.isNew) {
       return navigate("WithDrawer");
     }
     this.setState({ isLoading: false });
@@ -41,16 +43,19 @@ export class Login extends Component {
       const res = await loginWithFacebook();
       onLogin(res);
       this.setState({ isLoading: false });
-      this.navigateToHome();
+      if (res.isNew) {
+        return this.navigateToHome("SignUp");
+      }
+      this.navigateToHome("WithDrawer");
     } catch (e) {
       alert(e.message);
       this.setState({ isLoading: false });
     }
   };
 
-  navigateToHome = () => {
+  navigateToHome = route => {
     const { navigate } = this.props.navigation;
-    return navigate("WithDrawer");
+    return navigate(route);
   };
 
   render() {
