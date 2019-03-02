@@ -83,7 +83,7 @@ export class SignUp extends Component {
     try {
       if (image !== user.photo) {
         const url = await uploadImages(image);
-        data.image = url;
+        data.photo = url;
       }
       console.log(data);
       await updateDB("users", user.uid, data);
@@ -142,7 +142,7 @@ export class SignUp extends Component {
               {isLoading ? (
                 <ActivityIndicator color="#fff" size="small" />
               ) : (
-                <Text style={Styles.btnText}>SIGN UP</Text>
+                <Text style={Styles.btnText}>Save</Text>
               )}
             </Button>
           </View>

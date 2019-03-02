@@ -1,6 +1,6 @@
 import { Dimensions, StyleSheet } from "react-native";
-import { Colors } from "../../constants/index";
 
+import { Colors } from "../../../constants/index";
 const { width, height } = Dimensions.get("window");
 
 export const Styles = StyleSheet.create({
@@ -53,5 +53,8 @@ export const Styles = StyleSheet.create({
     color: Colors.grey,
     fontSize: 10,
     marginTop: 10
+  },
+  dividerTxt: {
+    color: Colors.grey
   }
 });

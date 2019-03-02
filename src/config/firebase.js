@@ -3,6 +3,8 @@ import { firebaseConfig, facebookConfig } from "../constants/Credentials";
 import "firebase/firestore";
 import "firebase/auth";
 
+import { registerForPushNotificationsAsync } from "./helpers";
+
 firebase.initializeApp(firebaseConfig);
 const firestore = firebase.firestore();
 const auth = firebase.auth();
@@ -10,45 +12,58 @@ const storage = firebase.storage();
 
 export const loginWithFacebook = () => {
   return new Promise(async (resolve, reject) => {
-    const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
-      facebookConfig.appId,
-      { permissions: ["public_profile", "email"] }
-    );
-    if (type === "success") {
-      const credencials = firebase.auth.FacebookAuthProvider.credential(token);
-      auth
-        .signInAndRetrieveDataWithCredential(credencials)
-        .then(res => {
-          const userData = {
-            name: res.user.displayName,
-            email: res.user.email,
-            photo: `${res.user.photoURL}?type=large`,
-            uid: res.user.uid,
-            token
-          };
-          const response = getUser(userData);
-          response.then(res => {
-            resolve(res);
+    try {
+      const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
+        facebookConfig.appId,
+        { permissions: ["public_profile", "email"] }
+      );
+      console.log(token, type);
+      if (type === "success") {
+        const credencials = firebase.auth.FacebookAuthProvider.credential(
+          token
+        );
+        console.log(credencials);
+        auth
+          .signInAndRetrieveDataWithCredential(credencials)
+          .then(async res => {
+            const userData = {
+              name: res.user.displayName,
+              email: res.user.email,
+              photo: `${res.user.photoURL}?type=large`,
+              uid: res.user.uid,
+              token
+            };
+            const pushToken = await registerForPushNotificationsAsync();
+            console.log(pushToken);
+            userData.pushToken = pushToken;
+            await updateDB("users", userData.uid, { pushToken });
+            const response = await getUser(userData);
+            resolve(response);
           });
-        })
-        .catch(err => reject(err));
+      }
+    } catch (error) {
+      reject(error);
     }
   });
 };
 
 export const getUser = async userData => {
-  const user = await firestore
-    .collection("users")
-    .doc(userData.uid)
-    .get();
+  try {
+    const user = await firestore
+      .collection("users")
+      .doc(userData.uid)
+      .get();
 
-  if (!user.exists) {
-    await setUser(userData);
-    userData.isNew = true;
-    return userData;
+    if (!user.exists) {
+      await setUser(userData);
+      userData.isNew = true;
+      return userData;
+    }
+    userData.isNew = false;
+    return user.data();
+  } catch (error) {
+    throw error;
   }
-  userData.isNew = false;
-  return user.data();
 };
 
 export const setUser = userData => {
@@ -82,6 +97,7 @@ export const logout = () => {
 export const getAllCategories = async () => {
   const rawData = await firestore.collection("categories").get();
   const categories = [];
+
   await rawData.forEach(category => {
     categories.push(category.data());
   });
@@ -99,6 +115,37 @@ export const updateDB = async (collection, id, data, merge = true) => {
     .doc(id)
     .set(data, { merge });
   return responce;
+};
+
+export const searchInDB = async (collection, key, value) => {
+  const responce = await firestore
+    .collection(collection)
+    .where(key, "==", value)
+    .get();
+
+  const result = [];
+  await responce.forEach(item => {
+    const data = item.data();
+    data.id = item.id;
+    result.push(data);
+  });
+  return result;
+};
+
+export const searchInDBWithDualQuery = async (collection, key, value) => {
+  const responce = await firestore
+    .collection(collection)
+    .where(key[0], "==", value[0])
+    .where(key[0], "==", value[0])
+    .get();
+
+  const result = [];
+  await responce.forEach(item => {
+    const data = item.data();
+    data.id = item.id;
+    result.push(data);
+  });
+  return result;
 };
 
 export const getServices = async () => {

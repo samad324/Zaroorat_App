@@ -144,9 +144,11 @@ export class Login extends Component {
     const payload = {
       providerId: user.uid,
       providerNumber: user.number,
+      provider: user,
       title,
       description,
       category: categories.filter(item => item.name == selectedCategory)[0],
+      categoryTitle: selectedCategory,
       timeStamp: Date.now(),
       image
     };

@@ -1,5 +1,6 @@
-import { Location, Permissions } from "expo";
+import { Location, Permissions, Notifications } from "expo";
 import geolib from "geolib";
+import { Toast } from "native-base";
 
 const checkDistance = async (start, end) => {
   const inCircule = await geolib.isPointInCircle(start, end, 1000);
@@ -44,4 +45,56 @@ export const measureDistance = async (services, currentLocation) => {
   }
 
   return arr;
+};
+
+export const registerForPushNotificationsAsync = async () => {
+  const { status: existingStatus } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  let finalStatus = existingStatus;
+
+  if (existingStatus !== "granted") {
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    finalStatus = status;
+  }
+
+  if (finalStatus !== "granted") {
+    return;
+  }
+
+  let token = await Notifications.getExpoPushTokenAsync();
+
+  return token;
+};
+
+export const sendNotification = (token, title, message) => {
+  return new Promise((resolve, reject) => {
+    fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        host: "exp.host",
+        accept: "application/json",
+        "accept-encoding": "gzip, deflate"
+      },
+      body: JSON.stringify({
+        to: token,
+        title: title,
+        body: message,
+        sound: "default"
+      })
+    })
+      .then(res => res.json())
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+export const showToast = (messge, type) => {
+  Toast.show({
+    text: messge,
+    type,
+    buttonText: "Okay",
+    duration: 3000
+  });
 };

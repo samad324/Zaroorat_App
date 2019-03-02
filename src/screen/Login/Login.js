@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { View, ActivityIndicator, ImageBackground } from "react-native";
 import { connect } from "react-redux";
-import { StackActions, NavigationActions } from "react-navigation";
 
 import { Styles } from "./Styles";
 import Button from "../../components/Button";
@@ -25,7 +24,6 @@ export class Login extends Component {
   componentDidMount() {
     const { user } = this.props;
     const { navigate } = this.props.navigation;
-    console.log(user);
     if (user && user.isNew) {
       return navigate("SignUp");
     } else if (user && !user.isNew) {

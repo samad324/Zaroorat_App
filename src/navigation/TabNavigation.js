@@ -15,6 +15,8 @@ import Search from "../screen/Search/Search";
 import ViewCategoryScreen from "../screen/ViewCategory/ViewCategory";
 import AddServiceScreen from "../screen/AddService/AddService";
 import MapsSreen from "../screen/Maps/Maps";
+import ViewServiceScreen from "../screen/ViewService/ViewService";
+import ServicesDashboardScreen from "../screen/ServicesDashboard/ServicesDashboard";
 
 const FeedScreen = createStackNavigator({
   FeedScreen: Feed
@@ -34,6 +36,14 @@ const AddService = createStackNavigator({
 
 const Maps = createStackNavigator({
   Maps: MapsSreen
+});
+
+const ViewService = createStackNavigator({
+  ViewService: ViewServiceScreen
+});
+
+const ServicesDashboard = createStackNavigator({
+  ServicesDashboard: ServicesDashboardScreen
 });
 
 const TabsConfig = {
@@ -67,7 +77,9 @@ export default createAppContainer(
       Tabs,
       ViewCategory,
       AddService,
-      Maps
+      Maps,
+      ViewService,
+      ServicesDashboard
     },
     {
       headerMode: "none"
